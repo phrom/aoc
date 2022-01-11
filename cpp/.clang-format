@@ -3,7 +3,7 @@ BasedOnStyle: Mozilla
 AlignAfterOpenBracket: AlwaysBreak
 AlwaysBreakAfterDefinitionReturnType: None
 AlwaysBreakAfterReturnType: None
-ColumnLimit: '100'
+ColumnLimit: '80'
 ConstructorInitializerIndentWidth: '4'
 ContinuationIndentWidth: '4'
 IndentWidth: '4'

@@ -12,7 +12,10 @@ struct submarine
     virtual void down(int value) = 0;
     virtual void up(int value) = 0;
 
-    [[nodiscard]] auto horizontal_position() const -> int { return horizontal_position_; }
+    [[nodiscard]] auto horizontal_position() const -> int
+    {
+        return horizontal_position_;
+    }
     [[nodiscard]] auto depth() const -> int { return depth_; }
 
   protected:
