@@ -1,0 +1,16 @@
+cmake_minimum_required(VERSION 3.20)
+project(cpp)
+
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
+add_library(lib src/day1.cpp)
+target_include_directories(lib PUBLIC src/include)
+
+add_executable(main src/main.cpp)
+target_link_libraries(main PRIVATE lib)
+
+find_package(Catch2 CONFIG REQUIRED)
+
+add_executable(test test/main.cpp test/day1.cpp)
+target_link_libraries(test PRIVATE lib Catch2::Catch2 Catch2::Catch2WithMain)

@@ -1,0 +1,9 @@
+---
+BasedOnStyle: Mozilla
+AlignAfterOpenBracket: AlwaysBreak
+AlwaysBreakAfterDefinitionReturnType: None
+AlwaysBreakAfterReturnType: None
+ColumnLimit: '100'
+ConstructorInitializerIndentWidth: '4'
+ContinuationIndentWidth: '4'
+IndentWidth: '4'
