@@ -46,15 +46,68 @@ struct submarine
         return gamma_rate() * epsilon_rate();
     }
 
-  private:
-    [[nodiscard]] auto most_common_bit(int position) const -> int
+    [[nodiscard]] auto oxygen_generator_rating() const -> int
     {
-        return bitsum_[position] > (diagnostic_report_.size() / 2) ? 1 : 0;
+        return select_by_bit_criteria([&](const auto& sub, int x, int pos) {
+            int p = bitsize_ - pos - 1;
+            return (x & (1 << p)) != (sub.most_common_bit(p, 1) << p);
+        });
     }
 
-    [[nodiscard]] auto least_common_bit(int position) const -> int
+    [[nodiscard]] auto co2_scrubber_rating() -> int
     {
-        return most_common_bit(position) == 1 ? 0 : 1;
+        return select_by_bit_criteria([&](const auto& sub, int x, int pos) {
+            int p = bitsize_ - pos - 1;
+            return (x & (1 << p)) != (least_common_bit(p, 0) << p);
+        });
+    }
+
+    [[nodiscard]] auto life_support_rating() -> int
+    {
+        return oxygen_generator_rating() * co2_scrubber_rating();
+    }
+
+  private:
+    [[nodiscard]] auto most_common_bit(int position, int def = 0) const -> int
+    {
+        double mid = static_cast<double>(diagnostic_report_.size()) / 2;
+        if (bitsum_[position] > mid) {
+            return 1;
+        }
+        if (bitsum_[position] == mid) {
+            return def;
+        }
+        return 0;
+    }
+
+    [[nodiscard]] auto least_common_bit(int position, int def = 0) const -> int
+    {
+        double mid = static_cast<double>(diagnostic_report_.size()) / 2;
+        if (bitsum_[position] > mid) {
+            return 0;
+        }
+        if (bitsum_[position] == mid) {
+            return def;
+        }
+        return 1;
+    }
+
+    [[nodiscard]] auto select_by_bit_criteria(
+        auto bit_criteria,
+        int position = 0) const -> int
+    {
+        std::vector<int> candidates = diagnostic_report_;
+        candidates.erase(
+            std::remove_if(
+                candidates.begin(),
+                candidates.end(),
+                [&](int x) { return bit_criteria(*this, x, position); }),
+            candidates.end());
+        if (candidates.size() == 1) {
+            return candidates.front();
+        }
+        auto recur = submarine{ candidates, bitsize_ };
+        return recur.select_by_bit_criteria(bit_criteria, position + 1);
     }
 
     std::vector<int> diagnostic_report_;
@@ -62,7 +115,7 @@ struct submarine
     int bitsize_;
 };
 
-auto part1(const char* input) -> int
+auto create_submarine(const char* input) -> submarine
 {
     std::vector<int> diagnostic_report;
     std::istringstream iss{ input };
@@ -74,14 +127,17 @@ auto part1(const char* input) -> int
         }
         diagnostic_report.push_back(number);
     }
-    submarine submarine{ diagnostic_report,
-                         static_cast<int>(number_str.size()) };
-    return submarine.power_consumption();
+    return submarine{ diagnostic_report, static_cast<int>(number_str.size()) };
+}
+
+auto part1(const char* input) -> int
+{
+    return create_submarine(input).power_consumption();
 }
 
 auto part2(const char* input) -> int
 {
-    return 0;
+    return create_submarine(input).life_support_rating();
 }
 
 } // namespace day3

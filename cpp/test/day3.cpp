@@ -21,4 +21,9 @@ TEST_CASE("Day 3: Binary Diagnostic")
     {
         REQUIRE(day3::part1(input) == 198);
     }
+
+    SECTION("Part 2 - What is the life support rating of the submarine?")
+    {
+        REQUIRE(day3::part2(input) == 230);
+    }
 }
