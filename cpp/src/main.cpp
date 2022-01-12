@@ -11,7 +11,9 @@ auto read_file(const char* filename) -> std::string
 
 auto main() -> int
 {
-    auto file = read_file("../input/day4.txt");
-    std::cout << "day4::part1 = " << day4::part1(file) << "\n";
+    std::cout << "day4::part1 = " << day4::part1(read_file("../input/day4.txt"))
+              << "\n";
+    std::cout << "day4::part2 = " << day4::part2(read_file("../input/day4.txt"))
+              << "\n";
     return 0;
 }

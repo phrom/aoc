@@ -67,26 +67,34 @@ auto score(const board& board, const std::set<int>& numbers_drawn) -> int
     return score;
 }
 
-auto part1(std::string_view input) -> int
+auto winning_scores(std::string_view input) -> std::vector<int>
 {
+    std::vector<int> scores;
     game game = parse(input);
     std::set<int> numbers_drawn;
     for (int number : game.numbers) {
         numbers_drawn.insert(number);
         if (numbers_drawn.size() > 5) {
-            for (const auto& board : game.boards) {
-                if (bingo(board, numbers_drawn)) {
-                    return score(board, numbers_drawn) * number;
+            for (auto it = game.boards.begin(); it != game.boards.end(); ++it) {
+                if (bingo(*it, numbers_drawn)) {
+                    scores.push_back(score(*it, numbers_drawn) * number);
+                    it = game.boards.erase(it);
+                    --it;
                 }
             }
         }
     }
-    return 0;
+    return scores;
+}
+
+auto part1(std::string_view input) -> int
+{
+    return winning_scores(input).front();
 }
 
 auto part2(std::string_view input) -> int
 {
-    return 0;
+    return winning_scores(input).back();
 }
 
 } // namespace day4
