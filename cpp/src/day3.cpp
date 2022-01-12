@@ -1,4 +1,4 @@
-#include "day2.hpp"
+#include "day3.hpp"
 
 #include <array>
 #include <sstream>
@@ -6,8 +6,6 @@
 #include <vector>
 
 namespace day3 {
-
-const int BITS_IN_DIAGNOSTIC_REPORT = 12;
 
 struct submarine
 {

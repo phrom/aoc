@@ -7,7 +7,8 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 add_library(lib
   src/day1.cpp
   src/day2.cpp
-  src/day3.cpp)
+  src/day3.cpp
+  src/day4.cpp)
 target_include_directories(lib PUBLIC src/include)
 
 add_executable(main src/main.cpp)
@@ -19,5 +20,6 @@ add_executable(test
   test/main.cpp
   test/day1.cpp
   test/day2.cpp
-  test/day3.cpp)
+  test/day3.cpp
+  test/day4.cpp)
 target_link_libraries(test PRIVATE lib Catch2::Catch2 Catch2::Catch2WithMain)

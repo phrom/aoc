@@ -1,14 +1,17 @@
+#include <fstream>
 #include <iostream>
 
-int x;
+#include "day4.hpp"
 
-auto f() -> int&
+auto read_file(const char* filename) -> std::string
 {
-    return x;
+    std::ifstream file{ filename, std::fstream::in };
+    return { std::istreambuf_iterator<char>{ file }, {} };
 }
 
 auto main() -> int
 {
-    std::cout << "hello world!\n";
+    auto file = read_file("../input/day4.txt");
+    std::cout << "day4::part1 = " << day4::part1(file) << "\n";
     return 0;
 }
