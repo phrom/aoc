@@ -1,27 +1,39 @@
 #include "day6.hpp"
 
+#include <iostream>
+#include <numeric>
 #include <sstream>
 
 namespace day6 {
 
-school::school(std::vector<int> fish_)
-    : fish{ std::move(fish_) }
-{}
+school::school(std::vector<int> fish)
+    : fish_{ 0 }
+{
+    for (auto f : fish) {
+        fish_[f]++;
+    }
+}
 
 void school::advance_day()
 {
-    int add = 0;
-    for (auto& f : fish) {
-        if (f == 0) {
-            f = 6;
-            add++;
-        } else {
-            f--;
-        }
+    auto zero = fish_[0];
+    std::rotate(fish_.begin(), fish_.begin() + 1, fish_.end());
+    fish_[6] += zero;
+}
+
+template<typename T, std::size_t n>
+auto operator<<(std::ostream& out, const std::array<T, n>& arr) -> std::ostream&
+{
+    out << "[ ";
+    for (const auto& a : arr) {
+        out << a << ", ";
     }
-    while ((add--) != 0) {
-        fish.push_back(8);
-    }
+    return out << "]";
+}
+
+auto school::fish_count() const -> uint64_t
+{
+    return std::accumulate(fish_.begin(), fish_.end(), uint64_t{ 0 });
 }
 
 auto parse(std::string_view input) -> school
@@ -37,19 +49,23 @@ auto parse(std::string_view input) -> school
     return school{ fish };
 }
 
-auto part1(std::string_view input) -> int
+auto simulate_interval(std::string_view input, int days) -> uint64_t
 {
     auto school = parse(input);
-    const int date = 80;
-    for (int i = 0; i < date; ++i) {
+    for (int i = 0; i < days; ++i) {
         school.advance_day();
     }
-    return static_cast<int>(school.fish.size());
+    return school.fish_count();
 }
 
-auto part2(std::string_view input) -> int
+auto part1(std::string_view input) -> uint64_t
 {
-    return 0;
+    return simulate_interval(input, 80);
+}
+
+auto part2(std::string_view input) -> uint64_t
+{
+    return simulate_interval(input, 256);
 }
 
 } // namespace day6
