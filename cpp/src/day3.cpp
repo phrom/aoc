@@ -46,18 +46,20 @@ struct submarine
 
     [[nodiscard]] auto oxygen_generator_rating() const -> int
     {
-        return select_by_bit_criteria([&](const auto& sub, int x, int pos) {
-            int p = bitsize_ - pos - 1;
-            return (x & (1 << p)) != (sub.most_common_bit(p, 1) << p);
-        });
+        return select_by_bit_criteria(
+            [b{ bitsize_ }](const auto& sub, int x, int pos) {
+                int p = b - pos - 1;
+                return (x & (1 << p)) != (sub.most_common_bit(p, 1) << p);
+            });
     }
 
     [[nodiscard]] auto co2_scrubber_rating() -> int
     {
-        return select_by_bit_criteria([&](const auto& sub, int x, int pos) {
-            int p = bitsize_ - pos - 1;
-            return (x & (1 << p)) != (least_common_bit(p, 0) << p);
-        });
+        return select_by_bit_criteria(
+            [b{ bitsize_ }](const auto& sub, int x, int pos) {
+                int p = b - pos - 1;
+                return (x & (1 << p)) != (sub.least_common_bit(p, 0) << p);
+            });
     }
 
     [[nodiscard]] auto life_support_rating() -> int
@@ -101,7 +103,7 @@ struct submarine
                 candidates.end(),
                 [&](int x) { return bit_criteria(*this, x, position); }),
             candidates.end());
-        if (candidates.size() == 1) {
+        if (candidates.size() == 1 || position == bitsize_ - 1) {
             return candidates.front();
         }
         auto recur = submarine{ candidates, bitsize_ };
@@ -113,10 +115,10 @@ struct submarine
     int bitsize_;
 };
 
-auto create_submarine(const char* input) -> submarine
+auto create_submarine(std::string_view input) -> submarine
 {
     std::vector<int> diagnostic_report;
-    std::istringstream iss{ input };
+    std::istringstream iss{ std::string{ input } };
     std::string number_str;
     while (iss >> number_str) {
         int number = 0;
@@ -128,12 +130,12 @@ auto create_submarine(const char* input) -> submarine
     return submarine{ diagnostic_report, static_cast<int>(number_str.size()) };
 }
 
-auto part1(const char* input) -> int
+auto part1(std::string_view input) -> int
 {
     return create_submarine(input).power_consumption();
 }
 
-auto part2(const char* input) -> int
+auto part2(std::string_view input) -> int
 {
     return create_submarine(input).life_support_rating();
 }

@@ -23,9 +23,9 @@ struct submarine
     int depth_{ 0 };
 };
 
-auto run_commands(submarine& submarine, const char* commands) -> int
+auto run_commands(submarine& submarine, std::string_view commands) -> int
 {
-    std::istringstream iss{ commands };
+    std::istringstream iss{ std::string{ commands } };
     do {
         std::string command;
         int value;
@@ -42,7 +42,7 @@ auto run_commands(submarine& submarine, const char* commands) -> int
     return submarine.horizontal_position() * submarine.depth();
 }
 
-auto part1(const char* input) -> int
+auto part1(std::string_view input) -> int
 {
     struct submarine_part1 final : submarine
     {
@@ -53,7 +53,7 @@ auto part1(const char* input) -> int
     return run_commands(submarine, input);
 }
 
-auto part2(const char* input) -> int
+auto part2(std::string_view input) -> int
 {
     struct submarine_part2 final : submarine
     {

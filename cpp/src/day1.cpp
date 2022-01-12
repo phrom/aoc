@@ -6,9 +6,9 @@
 
 namespace day1 {
 
-auto part1(const char* input) -> int
+auto part1(std::string_view input) -> int
 {
-    std::istringstream iss{ input };
+    std::istringstream iss{ std::string{ input } };
     int prev = 0;
     int next = 0;
     int count = -1;
@@ -21,11 +21,11 @@ auto part1(const char* input) -> int
     return count;
 }
 
-auto part2(const char* input) -> int
+auto part2(std::string_view input) -> int
 {
     auto numbers = [&]() {
         std::vector<int> result;
-        std::istringstream iss{ input };
+        std::istringstream iss{ std::string{ input } };
         int number;
         while (iss >> number) {
             result.push_back(number);
