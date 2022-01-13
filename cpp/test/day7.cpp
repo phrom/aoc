@@ -13,4 +13,5 @@ TEST_CASE("Day 7: The Treachery of Whales")
     }
 
     SECTION("Part 1") { REQUIRE(day7::part1(input) == 37); }
+    SECTION("Part 2") { REQUIRE(day7::part2(input) == 168); }
 }
