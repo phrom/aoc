@@ -17,9 +17,9 @@ void crabs::update_fuel_cost_per_distance()
         fuel_cost_per_distance_.clear();
     }
     const auto max = *std::max_element(positions_.begin(), positions_.end());
-    fuel_cost_per_distance_.reserve(max);
+    fuel_cost_per_distance_.reserve(max + 1);
     int sum = 0;
-    for (int i = 0; i < max; ++i) {
+    for (int i = 0; i < max + 1; ++i) {
         fuel_cost_per_distance_.push_back(sum);
         sum += 1 + i * burn_rate_increase_;
     }
