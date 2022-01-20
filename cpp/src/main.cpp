@@ -9,6 +9,7 @@
 #include "day6.hpp"
 #include "day7.hpp"
 #include "day8.hpp"
+#include "day9.hpp"
 
 auto read_file(const char* filename) -> std::string
 {
@@ -38,5 +39,7 @@ auto main() -> int
     RUN(day7::part2, "day7.txt");
     RUN(day8::part1, "day8.txt");
     RUN(day8::part2, "day8.txt");
+    RUN(day9::part1, "day9.txt");
+    RUN(day9::part2, "day9.txt");
     return 0;
 }

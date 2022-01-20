@@ -12,7 +12,8 @@ add_library(lib
   src/day5.cpp
   src/day6.cpp
   src/day7.cpp
-  src/day8.cpp)
+  src/day8.cpp
+  src/day9.cpp)
 target_include_directories(lib PUBLIC src/include)
 
 add_executable(main src/main.cpp)
@@ -29,5 +30,6 @@ add_executable(test
   test/day5.cpp
   test/day6.cpp
   test/day7.cpp
-  test/day8.cpp)
+  test/day8.cpp
+  test/day9.cpp)
 target_link_libraries(test PRIVATE lib Catch2::Catch2 Catch2::Catch2WithMain)
