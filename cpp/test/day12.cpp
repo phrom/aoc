@@ -47,5 +47,5 @@ b-end
 
     SECTION("Part 1") { REQUIRE(day12::part1(input) == 226); }
 
-    SECTION("Part 2") { REQUIRE(day12::part2(input) == 0); }
+    SECTION("Part 2") { REQUIRE(day12::part2(input) == 3509); }
 }

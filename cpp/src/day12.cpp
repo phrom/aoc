@@ -79,10 +79,14 @@ void cave_system::add_connection(const std::string& from, const std::string& to)
 void cave_system::find_paths(
     std::vector<path>& all,
     path& current,
-    const cave& cave) const
+    const cave& cave,
+    bool revisit) const
 {
     if (cave.is_small_cave() && current.contains(cave.name())) {
-        return;
+        if (!revisit || cave.name() == "start") {
+            return;
+        }
+        revisit = false;
     }
     path new_path = current;
     new_path.add(cave.name());
@@ -91,16 +95,16 @@ void cave_system::find_paths(
         return;
     }
     for (const auto& n : cave.connected_caves()) {
-        find_paths(all, new_path, caves_.find(n)->second);
+        find_paths(all, new_path, caves_.find(n)->second, revisit);
     }
 }
 
-auto cave_system::paths() const -> std::vector<path>
+auto cave_system::paths(bool revisit) const -> std::vector<path>
 {
     std::vector<path> paths;
     path path{ {} };
     const auto& start = caves_.find("start")->second;
-    find_paths(paths, path, start);
+    find_paths(paths, path, start, revisit);
     return paths;
 }
 
@@ -131,7 +135,7 @@ auto part1(std::string_view input) -> uint64_t
 
 auto part2(std::string_view input) -> uint64_t
 {
-    return 0;
+    return parse(input).paths(true).size();
 }
 
 } // namespace day12

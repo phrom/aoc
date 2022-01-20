@@ -43,12 +43,15 @@ struct cave_system
 {
     void add_connection(const std::string& from, const std::string& to);
 
-    [[nodiscard]] auto paths() const -> std::vector<path>;
+    [[nodiscard]] auto paths(bool revisit = false) const -> std::vector<path>;
     auto operator==(const cave_system&) const -> bool = default;
 
   private:
-    void find_paths(std::vector<path>& all, path& current, const cave& cave)
-        const;
+    void find_paths(
+        std::vector<path>& all,
+        path& current,
+        const cave& cave,
+        bool revisit) const;
     friend std::ostream& operator<<(std::ostream& out, const cave_system& cave);
     std::map<std::string, cave> caves_;
 };
