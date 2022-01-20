@@ -1,9 +1,12 @@
 #include "day5.hpp"
 
-#include <iostream>
+#include "print.hpp"
+
 #include <sstream>
 
 namespace day5 {
+
+using ::operator<<;
 
 point::point(int x_, int y_)
     : x{ x_ }
@@ -52,16 +55,6 @@ auto line::points() const -> std::vector<point>
     }
     result.emplace_back(p2);
     return result;
-}
-
-template<typename T>
-auto operator<<(std::ostream& out, const std::vector<T>& vec) -> std::ostream&
-{
-    out << "[ ";
-    for (const auto& e : vec) {
-        out << e << ", ";
-    }
-    return out << " ]";
 }
 
 auto operator<<(std::ostream& out, const matrix& matrix) -> std::ostream&

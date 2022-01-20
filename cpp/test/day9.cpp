@@ -24,5 +24,5 @@ TEST_CASE("Day 9: Smoke Basin")
                                { 9, 8, 9, 9, 9, 6, 5, 6, 7, 8 } } });
     }
     SECTION("Part 1") { REQUIRE(day9::part1(input) == 15); }
-    SECTION("Part 2") { REQUIRE(day9::part2(input) == 0); }
+    SECTION("Part 2") { REQUIRE(day9::part2(input) == 1134); }
 }

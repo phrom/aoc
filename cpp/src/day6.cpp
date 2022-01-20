@@ -1,6 +1,5 @@
 #include "day6.hpp"
 
-#include <iostream>
 #include <numeric>
 #include <sstream>
 
@@ -19,16 +18,6 @@ void school::advance_day()
     auto zero = fish_[0];
     std::rotate(fish_.begin(), fish_.begin() + 1, fish_.end());
     fish_[6] += zero;
-}
-
-template<typename T, std::size_t n>
-auto operator<<(std::ostream& out, const std::array<T, n>& arr) -> std::ostream&
-{
-    out << "[ ";
-    for (const auto& a : arr) {
-        out << a << ", ";
-    }
-    return out << "]";
 }
 
 auto school::fish_count() const -> uint64_t
