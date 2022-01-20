@@ -47,5 +47,18 @@ TEST_CASE("Day 10: Syntax Scoring")
 
     SECTION("Part 1") { REQUIRE(day10::part1(input) == 26397); }
 
-    SECTION("Part 2") { REQUIRE(day10::part2(input) == 0); }
+    SECTION("is_incomplete")
+    {
+        REQUIRE(!day10::chunk{ "{([(<{}[<>[]}>{[]{[(<()>" }.is_incomplete());
+        REQUIRE(day10::chunk{ "[({(<(())[]>[[{[]{<()<>>" }.is_incomplete());
+    }
+
+    SECTION("completion_string")
+    {
+        REQUIRE(
+            day10::chunk{ "[({(<(())[]>[[{[]{<()<>>" }.completion_string() ==
+            "}}]])})]");
+    }
+
+    SECTION("Part 2") { REQUIRE(day10::part2(input) == 288957); }
 }
