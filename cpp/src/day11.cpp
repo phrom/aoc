@@ -33,7 +33,7 @@ void cavern::flash(std::array<std::array<bool, 10>, 10>& flashed, int i, int j)
     }
 }
 
-void cavern::update()
+auto cavern::update() -> uint64_t
 {
     for (int i = 0; i < 10; ++i) {
         for (int j = 0; j < 10; ++j) {
@@ -48,17 +48,20 @@ void cavern::update()
         }
     }
 
+    uint64_t result = 0;
     for (int i = 0; i < 10; ++i) {
         for (int j = 0; j < 10; ++j) {
             if (flashed[i][j]) {
                 octopus_[i][j] = 0;
                 flashes_++;
+                result++;
             }
         }
     }
+    return result;
 }
 
-auto cavern::flashes() const -> int
+auto cavern::flashes() const -> uint64_t
 {
     return flashes_;
 }
@@ -95,7 +98,12 @@ auto part1(std::string_view input) -> uint64_t
 
 auto part2(std::string_view input) -> uint64_t
 {
-    return 0;
+    auto cavern = parse(input);
+    int step = 1;
+    while (cavern.update() != 100) {
+        step++;
+    }
+    return step;
 }
 
 } // namespace day11

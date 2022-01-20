@@ -36,5 +36,5 @@ TEST_CASE("Day 11: Dumbo Octopus")
 
     SECTION("Part 1") { REQUIRE(day11::part1(input) == 1656); }
 
-    SECTION("Part 2") { REQUIRE(day11::part2(input) == 0); }
+    SECTION("Part 2") { REQUIRE(day11::part2(input) == 195); }
 }
