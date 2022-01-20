@@ -151,7 +151,6 @@ auto part1(std::string_view input) -> int
         chunks.begin(), chunks.end(), 0, [](int total, const auto& chunk) {
             return total + chunk.syntax_error_score();
         });
-    return 0;
 }
 
 auto part2(std::string_view input) -> uint64_t
