@@ -3,6 +3,7 @@
 
 #include <array>
 #include <iostream>
+#include <map>
 #include <queue>
 #include <set>
 #include <vector>
@@ -41,6 +42,16 @@ auto operator<<(std::ostream& out, const std::array<T, n>& arr) -> std::ostream&
         out << a << ", ";
     }
     return out << "]";
+}
+
+template<typename K, typename V>
+auto operator<<(std::ostream& out, const std::map<K, V>& map) -> std::ostream&
+{
+    out << "{ ";
+    for (const auto& p : map) {
+        out << p << ", ";
+    }
+    return out << " }";
 }
 
 #endif
