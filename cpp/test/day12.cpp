@@ -35,13 +35,13 @@ A-end
 b-end
 )");
         day12::cave_system expected;
-        expected.add_connection("start", "A");
-        expected.add_connection("start", "b");
-        expected.add_connection("A", "c");
-        expected.add_connection("A", "b");
-        expected.add_connection("b", "d");
-        expected.add_connection("A", "end");
-        expected.add_connection("b", "end");
+        expected.add_connection(symbol{ "start" }, symbol{ "A" });
+        expected.add_connection(symbol{ "start" }, symbol{ "b" });
+        expected.add_connection(symbol{ "A" }, symbol{ "c" });
+        expected.add_connection(symbol{ "A" }, symbol{ "b" });
+        expected.add_connection(symbol{ "b" }, symbol{ "d" });
+        expected.add_connection(symbol{ "A" }, symbol{ "end" });
+        expected.add_connection(symbol{ "b" }, symbol{ "end" });
         REQUIRE(system == expected);
     }
 

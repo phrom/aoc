@@ -8,23 +8,23 @@
 namespace day12 {
 using ::operator<<;
 
-cave::cave(std::string name)
-    : name_{ std::move(name) }
+cave::cave(symbol name)
+    : name_{ name }
 {}
 
-void cave::add_connection(const std::string& destination)
+void cave::add_connection(symbol destination)
 {
     connected_caves_.insert(destination);
 }
 
-auto cave::name() const -> std::string
+auto cave::name() const -> symbol
 {
     return name_;
 }
 
 auto cave::is_big_cave() const -> bool
 {
-    return isupper(name_[0]);
+    return isupper(name_.to_str()[0]);
 }
 
 auto cave::is_small_cave() const -> bool
@@ -32,7 +32,7 @@ auto cave::is_small_cave() const -> bool
     return !is_big_cave();
 }
 
-auto cave::connected_caves() const -> const std::set<std::string>&
+auto cave::connected_caves() const -> const std::set<symbol>&
 {
     return connected_caves_;
 }
@@ -43,16 +43,16 @@ std::ostream& operator<<(std::ostream& out, const cave& cave)
                << " }";
 }
 
-path::path(std::vector<std::string> path)
-    : path_{ std::move(path) }
+path::path(std::vector<symbol> path)
+    : path_{ path }
 {}
 
-auto path::contains(const std::string& name) const -> bool
+auto path::contains(symbol name) const -> bool
 {
     return std::find(path_.begin(), path_.end(), name) != path_.end();
 }
 
-void path::add(const std::string& name)
+void path::add(symbol name)
 {
     path_.push_back(name);
 }
@@ -62,7 +62,7 @@ std::ostream& operator<<(std::ostream& out, const path& path)
     return out << "path { " << path.path_ << " }";
 }
 
-void cave_system::add_connection(const std::string& from, const std::string& to)
+void cave_system::add_connection(symbol from, symbol to)
 {
     const auto add_cave = [&](auto name, auto connected) {
         auto it = caves_.find(name);
@@ -82,15 +82,17 @@ void cave_system::find_paths(
     const cave& cave,
     bool revisit) const
 {
+    static const auto start = symbol{ "start " };
+    static const auto end = symbol{ "end" };
     if (cave.is_small_cave() && current.contains(cave.name())) {
-        if (!revisit || cave.name() == "start") {
+        if (!revisit || cave.name() == start) {
             return;
         }
         revisit = false;
     }
     path new_path = current;
     new_path.add(cave.name());
-    if (cave.name() == "end") {
+    if (cave.name() == end) {
         all.push_back(new_path);
         return;
     }
@@ -103,8 +105,8 @@ auto cave_system::paths(bool revisit) const -> std::vector<path>
 {
     std::vector<path> paths;
     path path{ {} };
-    const auto& start = caves_.find("start")->second;
-    find_paths(paths, path, start, revisit);
+    const auto& start_cave = caves_.find(symbol{ "start" })->second;
+    find_paths(paths, path, start_cave, revisit);
     return paths;
 }
 
@@ -123,7 +125,7 @@ auto parse(std::string_view input) -> cave_system
         std::string from, to;
         std::getline(lss, from, '-');
         std::getline(lss, to, '-');
-        result.add_connection(from, to);
+        result.add_connection(symbol{ from }, symbol{ to });
     }
     return result;
 }
