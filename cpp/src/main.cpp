@@ -22,7 +22,8 @@ auto read_file(const char* filename) -> std::string
 }
 
 #define RUN(function, filename)                                                \
-    std::cout << #function " = " << function(read_file("../input/" filename))  \
+    std::cout << #function " = "                                               \
+              << function(read_file(INPUT_FOLDER "/" filename))  \
               << "\n"
 
 auto main() -> int

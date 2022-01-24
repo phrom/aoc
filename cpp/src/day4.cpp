@@ -3,6 +3,7 @@
 #include <set>
 #include <sstream>
 #include <string>
+#include <algorithm>
 
 namespace day4 {
 
@@ -75,12 +76,14 @@ auto winning_scores(std::string_view input) -> std::vector<int>
     for (int number : game.numbers) {
         numbers_drawn.insert(number);
         if (numbers_drawn.size() > 5) {
-            for (auto it = game.boards.begin(); it != game.boards.end(); ++it) {
-                if (bingo(*it, numbers_drawn)) {
-                    scores.push_back(score(*it, numbers_drawn) * number);
-                    it = game.boards.erase(it);
-                    --it;
+            for (int i = 0; i < game.boards.size(); ++i) {
+                if (bingo(game.boards[i], numbers_drawn)) {
+                    scores.push_back(
+                        score(game.boards[i], numbers_drawn) * number);
+                    game.boards.erase(game.boards.begin() + i);
+                    --i;
                 }
+            
             }
         }
     }

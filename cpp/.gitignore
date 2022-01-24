@@ -1,3 +1,5 @@
-/cmake-build-debug/
+/cmake-*/
 /.cache/
 /compile_commands.json
+
+/CMakeSettings.json
