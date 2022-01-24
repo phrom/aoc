@@ -6,6 +6,7 @@
 #include "day11.hpp"
 #include "day12.hpp"
 #include "day13.hpp"
+#include "day14.hpp"
 #include "day2.hpp"
 #include "day3.hpp"
 #include "day4.hpp"
@@ -23,8 +24,7 @@ auto read_file(const char* filename) -> std::string
 
 #define RUN(function, filename)                                                \
     std::cout << #function " = "                                               \
-              << function(read_file(INPUT_FOLDER "/" filename))  \
-              << "\n"
+              << function(read_file(INPUT_FOLDER "/" filename)) << "\n"
 
 auto main() -> int
 {
@@ -54,5 +54,7 @@ auto main() -> int
     RUN(day12::part2, "day12.txt");
     RUN(day13::part1, "day13.txt");
     RUN(day13::part2, "day13.txt");
+    RUN(day14::part1, "day14.txt");
+    RUN(day14::part2, "day14.txt");
     return 0;
 }
