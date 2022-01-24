@@ -51,11 +51,13 @@ struct cave_system
   private:
     void find_paths(
         std::vector<path>& all,
-        path& current,
+        const path& current,
         const cave& cave,
         bool revisit) const;
     friend std::ostream& operator<<(std::ostream& out, const cave_system& cave);
     std::map<symbol, cave> caves_;
+    symbol start_{ symbol{ "start" } };
+    symbol end_{ symbol{ "end" } };
 };
 
 auto parse(std::string_view input) -> cave_system;

@@ -24,7 +24,7 @@ auto cave::name() const -> symbol
 
 auto cave::is_big_cave() const -> bool
 {
-    return isupper(name_.to_str()[0]);
+    return isupper(name_.to_str()[0]) != 0;
 }
 
 auto cave::is_small_cave() const -> bool
@@ -44,7 +44,7 @@ std::ostream& operator<<(std::ostream& out, const cave& cave)
 }
 
 path::path(std::vector<symbol> path)
-    : path_{ path }
+    : path_{ std::move(path) }
 {}
 
 auto path::contains(symbol name) const -> bool
@@ -78,21 +78,19 @@ void cave_system::add_connection(symbol from, symbol to)
 
 void cave_system::find_paths(
     std::vector<path>& all,
-    path& current,
+    const path& current,
     const cave& cave,
     bool revisit) const
 {
-    static const auto start = symbol{ "start " };
-    static const auto end = symbol{ "end" };
     if (cave.is_small_cave() && current.contains(cave.name())) {
-        if (!revisit || cave.name() == start) {
+        if (!revisit || cave.name() == start_) {
             return;
         }
         revisit = false;
     }
     path new_path = current;
     new_path.add(cave.name());
-    if (cave.name() == end) {
+    if (cave.name() == end_) {
         all.push_back(new_path);
         return;
     }
@@ -105,7 +103,7 @@ auto cave_system::paths(bool revisit) const -> std::vector<path>
 {
     std::vector<path> paths;
     path path{ {} };
-    const auto& start_cave = caves_.find(symbol{ "start" })->second;
+    const auto& start_cave = caves_.find(start_)->second;
     find_paths(paths, path, start_cave, revisit);
     return paths;
 }
