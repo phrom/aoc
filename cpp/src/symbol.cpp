@@ -1,5 +1,7 @@
 #include "symbol.hpp"
 
+#include <iostream>
+
 std::unordered_map<std::string, uint64_t> symbol::string_to_handle_;
 std::vector<std::string_view> symbol::handle_to_string_;
 
