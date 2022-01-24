@@ -72,48 +72,48 @@ std::ostream& operator<<(std::ostream& out, const pair_insertion_rule& rule)
 }
 
 polymer_template::polymer_template(std::string polymer)
+    : last_element_{ polymer.back() }
 {
     for (int i = 0; i < polymer.size() - 1; ++i) {
-        polymer_.emplace_back(polymer.substr(i, 2));
+        symbol_count_[symbol{ polymer.substr(i, 2) }]++;
     }
 }
 
 void polymer_template::insert_pairs(
     const std::vector<pair_insertion_rule>& rules)
 {
-    for (auto it = polymer_.begin(); it != polymer_.end(); ++it) {
-        if (auto rit = std::find_if(
+    std::map<std::vector<pair_insertion_rule>::const_iterator, uint64_t>
+        matched;
+    for (const auto [symbol, count] : symbol_count_) {
+        if (const auto rit = std::find_if(
                 rules.begin(),
                 rules.end(),
                 [&](const auto& rule) {
-                    return rule.get_combination() == *it;
+                    return rule.get_combination() == symbol;
                 });
             rit != rules.end()) {
-            it = polymer_.erase(it);
-            auto [f, s] = rit->get_resulting_combinations();
-            it = polymer_.emplace(it, f);
-            it = polymer_.emplace(++it, s);
+            matched.insert({ rit, count });
+        }
+    }
+    for (const auto [rit, count] : matched) {
+        const auto c = rit->get_combination();
+        symbol_count_[c] -= count;
+        if (symbol_count_[c] == 0) {
+            symbol_count_.erase(c);
+        }
+        for (const auto r : rit->get_resulting_combinations()) {
+            symbol_count_[r] += count;
         }
     }
 }
 
 auto polymer_template::count_elements() const -> std::vector<element_count>
 {
-    std::map<char, int> count;
-    for (symbol s : polymer_) {
-        char c = s.to_str()[0];
-        auto it = count.find(c);
-        if (it == count.end()) {
-            it = count.insert(it, { c, 0 });
-        }
-        it->second++;
+    std::map<char, uint64_t> count;
+    for (auto [s, c] : symbol_count_) {
+        count[s.to_str()[0]] += c;
     }
-    char c = polymer_.back().to_str()[1];
-    auto it = count.find(c);
-    if (it == count.end()) {
-        it = count.insert(it, { c, 0 });
-    }
-    it->second++;
+    count[last_element_]++;
     std::vector<element_count> result;
     result.reserve(count.size());
     for (auto [e, c] : count) {
@@ -125,7 +125,8 @@ auto polymer_template::count_elements() const -> std::vector<element_count>
 
 std::ostream& operator<<(std::ostream& out, const polymer_template& polymer_)
 {
-    return out << "polymer_template { " << polymer_.polymer_ << "}";
+    return out << "polymer_template { " << polymer_.symbol_count_ << ", "
+               << polymer_.last_element_ << " }";
 }
 
 manual::manual(polymer_template polymer, std::vector<pair_insertion_rule> rules)
@@ -176,7 +177,6 @@ auto part1(std::string_view input) -> uint64_t
     auto manual = parse(input);
     manual.apply_steps(10);
     const auto counts = manual.count_elements();
-    std::cout << "counts: " << counts << "\n";
     if (counts.empty()) {
         return 0;
     }
@@ -186,7 +186,7 @@ auto part1(std::string_view input) -> uint64_t
 auto part2(std::string_view input) -> uint64_t
 {
     auto manual = parse(input);
-    manual.apply_steps(20);
+    manual.apply_steps(40);
     const auto counts = manual.count_elements();
     if (counts.empty()) {
         return 0;
