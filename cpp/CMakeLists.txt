@@ -21,6 +21,7 @@ target_include_directories(lib PUBLIC src/include)
 
 add_executable(main src/main.cpp)
 target_link_libraries(main PRIVATE lib)
+target_compile_definitions(main PRIVATE INPUT_FOLDER="${CMAKE_SOURCE_DIR}/../input")
 
 find_package(Catch2 CONFIG REQUIRED)
 
@@ -38,4 +39,4 @@ add_executable(test
   test/day10.cpp
   test/day11.cpp
   test/day12.cpp)
-target_link_libraries(test PRIVATE lib Catch2::Catch2 Catch2::Catch2WithMain)
+target_link_libraries(test PRIVATE lib Catch2::Catch2)

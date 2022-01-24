@@ -1,6 +1,7 @@
 #include "day7.hpp"
 
 #include <sstream>
+#include <algorithm>
 
 namespace day7 {
 
