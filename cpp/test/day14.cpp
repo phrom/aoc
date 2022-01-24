@@ -51,4 +51,5 @@ CN -> C
     }
 
     SECTION("Part 1") { REQUIRE(day14::part1(input) == 1588); }
+    SECTION("Part 2") { REQUIRE(day14::part2(input) == 2188189693529); }
 }

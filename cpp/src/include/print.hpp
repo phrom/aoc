@@ -3,6 +3,7 @@
 
 #include <array>
 #include <iostream>
+#include <list>
 #include <map>
 #include <queue>
 #include <set>
@@ -10,6 +11,16 @@
 
 template<typename T>
 auto operator<<(std::ostream& out, const std::vector<T>& vec) -> std::ostream&
+{
+    out << "[ ";
+    for (const auto& e : vec) {
+        out << e << ", ";
+    }
+    return out << " ]";
+}
+
+template<typename T>
+auto operator<<(std::ostream& out, const std::list<T>& vec) -> std::ostream&
 {
     out << "[ ";
     for (const auto& e : vec) {

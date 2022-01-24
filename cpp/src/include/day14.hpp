@@ -1,6 +1,7 @@
 #ifndef AOC_DAY14_HPP
 #define AOC_DAY14_HPP
 
+#include <list>
 #include <string_view>
 #include <vector>
 
@@ -54,7 +55,7 @@ struct polymer_template
 
   private:
     friend std::ostream& operator<<(std::ostream& out, const polymer_template&);
-    std::string polymer_;
+    std::list<symbol> polymer_;
 };
 
 struct manual

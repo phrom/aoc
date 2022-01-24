@@ -72,40 +72,48 @@ std::ostream& operator<<(std::ostream& out, const pair_insertion_rule& rule)
 }
 
 polymer_template::polymer_template(std::string polymer)
-    : polymer_{ std::move(polymer) }
-{}
+{
+    for (int i = 0; i < polymer.size() - 1; ++i) {
+        polymer_.emplace_back(polymer.substr(i, 2));
+    }
+}
 
 void polymer_template::insert_pairs(
     const std::vector<pair_insertion_rule>& rules)
 {
-    std::ostringstream p;
-    for (int i = 0; i < polymer_.size() - 1; ++i) {
-        p << polymer_[i];
-        if (auto it = std::find_if(
+    for (auto it = polymer_.begin(); it != polymer_.end(); ++it) {
+        if (auto rit = std::find_if(
                 rules.begin(),
                 rules.end(),
                 [&](const auto& rule) {
-                    return rule.get_combination() ==
-                           symbol{ polymer_.substr(i, 2) };
+                    return rule.get_combination() == *it;
                 });
-            it != rules.end()) {
-            p << it->get_result();
+            rit != rules.end()) {
+            it = polymer_.erase(it);
+            auto [f, s] = rit->get_resulting_combinations();
+            it = polymer_.emplace(it, f);
+            it = polymer_.emplace(++it, s);
         }
     }
-    p << polymer_.back();
-    polymer_ = p.str();
 }
 
 auto polymer_template::count_elements() const -> std::vector<element_count>
 {
     std::map<char, int> count;
-    for (char c : polymer_) {
+    for (symbol s : polymer_) {
+        char c = s.to_str()[0];
         auto it = count.find(c);
         if (it == count.end()) {
             it = count.insert(it, { c, 0 });
         }
         it->second++;
     }
+    char c = polymer_.back().to_str()[1];
+    auto it = count.find(c);
+    if (it == count.end()) {
+        it = count.insert(it, { c, 0 });
+    }
+    it->second++;
     std::vector<element_count> result;
     result.reserve(count.size());
     for (auto [e, c] : count) {
@@ -168,6 +176,7 @@ auto part1(std::string_view input) -> uint64_t
     auto manual = parse(input);
     manual.apply_steps(10);
     const auto counts = manual.count_elements();
+    std::cout << "counts: " << counts << "\n";
     if (counts.empty()) {
         return 0;
     }
@@ -176,7 +185,13 @@ auto part1(std::string_view input) -> uint64_t
 
 auto part2(std::string_view input) -> uint64_t
 {
-    return 0;
+    auto manual = parse(input);
+    manual.apply_steps(20);
+    const auto counts = manual.count_elements();
+    if (counts.empty()) {
+        return 0;
+    }
+    return counts.back().get_count() - counts.front().get_count();
 }
 
 } // namespace day14
