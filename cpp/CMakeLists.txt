@@ -20,6 +20,7 @@ add_library(lib
   src/day13.cpp
   src/day14.cpp
   src/day15.cpp
+  src/day16.cpp
   src/symbol.cpp)
 target_include_directories(lib PUBLIC src/include)
 
@@ -46,5 +47,6 @@ add_executable(test
   test/day13.cpp
   test/day14.cpp
   test/day15.cpp
+  test/day16.cpp
   test/symbol.cpp)
 target_link_libraries(test PRIVATE lib Catch2::Catch2)
