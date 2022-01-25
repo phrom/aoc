@@ -7,6 +7,7 @@
 #include "day12.hpp"
 #include "day13.hpp"
 #include "day14.hpp"
+#include "day15.hpp"
 #include "day2.hpp"
 #include "day3.hpp"
 #include "day4.hpp"
@@ -56,5 +57,7 @@ auto main() -> int
     RUN(day13::part2, "day13.txt");
     RUN(day14::part1, "day14.txt");
     RUN(day14::part2, "day14.txt");
+    RUN(day15::part1, "day15.txt");
+    RUN(day15::part2, "day15.txt");
     return 0;
 }
