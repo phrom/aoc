@@ -31,6 +31,14 @@ struct matrix
         }
     }
 
+    void reserve(int rows, int columns)
+    {
+        m_.reserve(rows);
+        for (auto& row : m_) {
+            row.reserve(columns);
+        }
+    }
+
   private:
     void ensure_size(int i, int j)
     {
