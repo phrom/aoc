@@ -2,6 +2,7 @@
 
 #include "print.hpp"
 
+#include <algorithm>
 #include <limits>
 #include <queue>
 #include <sstream>
@@ -16,12 +17,41 @@ cavern::cavern(matrix<uint64_t> heightmap)
 
 auto cavern::lowest_risk_path() const -> uint64_t
 {
+    struct comparison
+    {
+        explicit comparison(const matrix<uint64_t>& total_risk_)
+            : total_risk{ total_risk_ }
+        {}
+        auto operator()(
+            const std::pair<int, int>& lhs,
+            const std::pair<int, int>& rhs) -> bool
+        {
+            return total_risk.get(lhs.first, lhs.second) <
+                   total_risk.get(rhs.first, rhs.second);
+        }
+
+      private:
+        const matrix<uint64_t>& total_risk;
+    };
+
     matrix<uint64_t> total_risk;
-    std::set<std::pair<int, int>> unvisited;
+    matrix<bool> unvisited;
+
+    std::vector<std::pair<int, int>> ordered;
+    std::map<std::pair<int, int>, std::vector<std::pair<int, int>>::iterator>
+        ordered_it;
+
     for (int i = 0; i < heightmap_.rows(); ++i) {
         for (int j = 0; j < heightmap_.columns(i); ++j) {
             total_risk.set(i, j, std::numeric_limits<uint64_t>::max());
-            unvisited.emplace(i, j);
+            unvisited.set(i, j, true);
+            ordered_it[{ i, j }] = ordered.insert(
+                std::lower_bound(
+                    ordered.begin(),
+                    ordered.end(),
+                    std::pair{ i, j },
+                    comparison{ total_risk }),
+                { i, j });
         }
     }
     total_risk.set(0, 0, 0);
@@ -31,21 +61,26 @@ auto cavern::lowest_risk_path() const -> uint64_t
             j >= heightmap_.columns(i)) {
             return;
         }
-        if (unvisited.contains({ i, j })) {
+        if (unvisited.get(i, j)) {
             const auto risk =
                 total_risk.get(p.first, p.second) + heightmap_.get(i, j);
             total_risk.set(i, j, std::min(total_risk.get(i, j), risk));
+            auto oit = ordered_it.find({ i, j });
+            ordered.erase(oit->second);
+            oit->second = ordered.insert(
+                std::lower_bound(
+                    ordered.begin(),
+                    ordered.end(),
+                    std::pair{ i, j },
+                    comparison{ total_risk }),
+                { i, j });
         }
     };
 
-    while (!unvisited.empty()) {
-        const auto it = std::min_element(
-            unvisited.begin(), unvisited.end(), [&](auto lhs, auto rhs) {
-                return total_risk.get(lhs.first, lhs.second) <
-                       total_risk.get(rhs.first, rhs.second);
-            });
-        const auto p = *it;
-        unvisited.erase(it);
+    while (!ordered.empty()) {
+        const auto p = ordered.front();
+        ordered.erase(ordered.begin());
+        unvisited.set(p.first, p.second, false);
         follow_neighbor(p, p.first - 1, p.second);
         follow_neighbor(p, p.first + 1, p.second);
         follow_neighbor(p, p.first, p.second - 1);
