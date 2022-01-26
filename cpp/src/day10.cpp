@@ -9,6 +9,8 @@ namespace day10 {
 
 chunk::chunk(std::string chunk)
     : chunk_{ std::move(chunk) }
+    , open_tokens_{}
+    , illegal_char_{}
 {
     for (char c : chunk_) {
         switch (c) {

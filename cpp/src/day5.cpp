@@ -8,7 +8,7 @@ namespace day5 {
 
 using ::operator<<;
 
-point::point(int x_, int y_)
+point::point(uint64_t x_, uint64_t y_)
     : x{ x_ }
     , y{ y_ }
 {}
@@ -41,8 +41,8 @@ auto line::is_vertical() const -> bool
 auto line::points() const -> std::vector<point>
 {
     std::vector<point> result;
-    const auto delta = [](int a, int b) {
-        const int diff = b - a;
+    const auto delta = [](uint64_t a, uint64_t b) -> int {
+        const int diff = static_cast<int>(b) - static_cast<int>(a);
         return diff == 0 ? 0 : diff > 0 ? 1 : -1;
     };
     const int dx = delta(p1.x, p2.x);
@@ -50,8 +50,8 @@ auto line::points() const -> std::vector<point>
     point p = p1;
     while (p != p2) {
         result.emplace_back(p);
-        p.x += dx;
-        p.y += dy;
+        p.x = static_cast<uint64_t>(static_cast<int>(p.x) + dx);
+        p.y = static_cast<uint64_t>(static_cast<int>(p.y) + dy);
     }
     result.emplace_back(p2);
     return result;
@@ -66,7 +66,7 @@ auto operator<<(std::ostream& out, const matrix& matrix) -> std::ostream&
     return out << "}";
 }
 
-auto matrix::size() const -> std::pair<int, int>
+auto matrix::size() const -> std::pair<uint64_t, uint64_t>
 {
     const auto compare_size = [](const auto& lhs, const auto& rhs) {
         return lhs.size() < rhs.size();
@@ -77,7 +77,7 @@ auto matrix::size() const -> std::pair<int, int>
     };
 }
 
-auto matrix::get(int x, int y) const -> int
+auto matrix::get(uint64_t x, uint64_t y) const -> int
 {
     if (!(x < value_.size() && y < value_[x].size())) {
         return 0;
@@ -86,14 +86,14 @@ auto matrix::get(int x, int y) const -> int
 }
 
 template<typename T>
-void ensure_size(std::vector<T>& vec, int size)
+void ensure_size(std::vector<T>& vec, uint64_t size)
 {
     if (vec.size() < size) {
         vec.resize(size);
     }
 }
 
-void matrix::set(int x, int y, int value)
+void matrix::set(uint64_t x, uint64_t y, int value)
 {
     ensure_size(value_, x + 1);
     ensure_size(value_[x], y + 1);
@@ -109,8 +109,8 @@ auto floor::overlapping_points(bool include_diagonals) const -> int
     int total = 0;
     const matrix overlaps = calculate_overlap(include_diagonals);
     const auto size = overlaps.size();
-    for (int i = 0; i < size.first; ++i) {
-        for (int j = 0; j < size.second; ++j) {
+    for (uint64_t i = 0; i < size.first; ++i) {
+        for (uint64_t j = 0; j < size.second; ++j) {
             if (overlaps.get(i, j) > 1) {
                 total++;
             }
@@ -138,7 +138,7 @@ auto parse(std::string_view input) -> floor
     std::vector<line> lines;
     std::string l;
     while (std::getline(iss, l)) {
-        int x1, y1, x2, y2;
+        uint64_t x1, y1, x2, y2;
         char comma;
         std::string arrow;
         std::istringstream lss{ l };

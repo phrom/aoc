@@ -72,9 +72,10 @@ std::ostream& operator<<(std::ostream& out, const pair_insertion_rule& rule)
 }
 
 polymer_template::polymer_template(std::string polymer)
-    : last_element_{ polymer.back() }
+    : symbol_count_{}
+    , last_element_{ polymer.back() }
 {
-    for (int i = 0; i < polymer.size() - 1; ++i) {
+    for (uint64_t i = 0; i < polymer.size() - 1; ++i) {
         symbol_count_[symbol{ polymer.substr(i, 2) }]++;
     }
 }

@@ -5,7 +5,7 @@
 
 namespace day6 {
 
-school::school(std::vector<int> fish)
+school::school(std::vector<uint64_t> fish)
     : fish_{ 0 }
 {
     for (auto f : fish) {
@@ -28,9 +28,9 @@ auto school::fish_count() const -> uint64_t
 auto parse(std::string_view input) -> school
 {
     std::istringstream iss{ std::string{ input } };
-    std::vector<int> fish;
+    std::vector<uint64_t> fish;
     while (!iss.eof()) {
-        int interval;
+        uint64_t interval;
         char comma;
         iss >> interval >> comma;
         fish.push_back(interval);

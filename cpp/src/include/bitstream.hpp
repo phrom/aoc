@@ -9,7 +9,7 @@ struct bitstream
 
     [[nodiscard]] auto read(uint64_t bits) -> uint64_t;
 
-    static auto bitmask(int bits) -> int;
+    static auto bitmask(uint64_t bits) -> uint64_t;
 
   private:
     std::string input_;

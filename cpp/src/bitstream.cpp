@@ -3,7 +3,7 @@
 #include <algorithm>
 #include <iostream>
 
-auto read_hex(unsigned char c) -> int
+auto read_hex(char c) -> uint64_t
 {
     switch (c) {
         case '0':
@@ -45,10 +45,10 @@ auto read_hex(unsigned char c) -> int
         case 'f':
             return 15;
     };
-    return -1;
+    return 0;
 };
 
-auto bitstream::bitmask(int bits) -> int
+auto bitstream::bitmask(uint64_t bits) -> uint64_t
 {
     if (bits == 0) {
         return 0;
@@ -68,7 +68,7 @@ auto bitstream::read(uint64_t bits) -> uint64_t
     while (bits != 0) {
         uint64_t to_read = std::min(bits, 4 - bit_);
         result <<= to_read;
-        int shift = 4 - bit_ - to_read;
+        uint64_t shift = 4 - bit_ - to_read;
         result |=
             (read_hex(input_[char_]) & (bitmask(to_read) << shift)) >> shift;
         bits -= to_read;

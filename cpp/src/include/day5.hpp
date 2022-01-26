@@ -9,12 +9,12 @@ namespace day5 {
 
 struct point
 {
-    point(int x_, int y_);
+    point(uint64_t x_, uint64_t y_);
 
     auto operator<=>(const point&) const = default;
 
-    int x;
-    int y;
+    uint64_t x;
+    uint64_t y;
 };
 
 auto operator<<(std::ostream&, const point&) -> std::ostream&;
@@ -37,9 +37,9 @@ auto operator<<(std::ostream&, const line&) -> std::ostream&;
 
 struct matrix
 {
-    [[nodiscard]] auto size() const -> std::pair<int, int>;
-    [[nodiscard]] auto get(int x, int y) const -> int;
-    void set(int x, int y, int value);
+    [[nodiscard]] auto size() const -> std::pair<uint64_t, uint64_t>;
+    [[nodiscard]] auto get(uint64_t x, uint64_t y) const -> int;
+    void set(uint64_t x, uint64_t y, int value);
 
     auto operator<=>(const matrix&) const = default;
     friend auto operator<<(std::ostream&, const matrix&) -> std::ostream&;

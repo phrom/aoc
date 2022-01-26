@@ -10,28 +10,34 @@ struct matrix
     matrix() = default;
     matrix(matrix&&) noexcept = default;
 
-    [[nodiscard]] auto get(int i, int j) const -> T { return m_[i][j]; }
+    [[nodiscard]] auto get(uint64_t i, uint64_t j) const -> T
+    {
+        return m_[i][j];
+    }
 
-    void set(int i, int j, const T& v)
+    void set(uint64_t i, uint64_t j, const T& v)
     {
         ensure_size(i, j);
         m_[i][j] = v;
     }
 
-    [[nodiscard]] auto rows() const -> int { return m_.size(); }
+    [[nodiscard]] auto rows() const -> uint64_t { return m_.size(); }
 
-    [[nodiscard]] auto columns(int row) const -> int { return m_[row].size(); }
+    [[nodiscard]] auto columns(uint64_t row) const -> uint64_t
+    {
+        return m_[row].size();
+    }
 
-    void remove_rows(int new_size) { m_.resize(new_size); }
+    void remove_rows(uint64_t new_size) { m_.resize(new_size); }
 
-    void remove_columns(int new_size)
+    void remove_columns(uint64_t new_size)
     {
         for (auto& r : m_) {
             r.resize(new_size);
         }
     }
 
-    void reserve(int rows, int columns)
+    void reserve(uint64_t rows, uint64_t columns)
     {
         m_.reserve(rows);
         for (auto& row : m_) {
@@ -40,7 +46,7 @@ struct matrix
     }
 
   private:
-    void ensure_size(int i, int j)
+    void ensure_size(uint64_t i, uint64_t j)
     {
         if (i >= m_.size()) {
             m_.resize(i + 1);

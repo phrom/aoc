@@ -10,6 +10,7 @@ using ::operator<<;
 
 cave::cave(symbol name)
     : name_{ name }
+    , connected_caves_{}
 {}
 
 void cave::add_connection(symbol destination)

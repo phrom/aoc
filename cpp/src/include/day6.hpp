@@ -10,7 +10,7 @@ namespace day6 {
 
 struct school
 {
-    explicit school(std::vector<int> fish);
+    explicit school(std::vector<uint64_t> fish);
 
     void advance_day();
     [[nodiscard]] auto fish_count() const -> uint64_t;

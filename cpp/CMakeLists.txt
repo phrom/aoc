@@ -3,6 +3,11 @@ project(cpp)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+set(ENABLE_COMPILER_WARNINGS
+     $<$<OR:$<CXX_COMPILER_ID:Clang>,$<CXX_COMPILER_ID:AppleClang>,$<CXX_COMPILER_ID:GNU>>:
+          -Wall -Wextra -Weffc++ -Wconversion -Wsign-conversion -pedantic>
+     $<$<CXX_COMPILER_ID:MSVC>:
+          /W4 /WX>)
 
 find_package(Boost REQUIRED)
 add_library(lib
@@ -24,12 +29,15 @@ add_library(lib
   src/day16.cpp
   src/symbol.cpp
   src/bitstream.cpp)
-target_include_directories(lib PUBLIC src/include)
+target_include_directories(lib PRIVATE src/include)
+target_include_directories(lib SYSTEM PUBLIC src/include)
 target_link_libraries(lib PUBLIC Boost::headers)
+target_compile_options(lib PRIVATE ${ENABLE_COMPILER_WARNINGS})
 
 add_executable(main src/main.cpp)
 target_link_libraries(main PRIVATE lib)
 target_compile_definitions(main PRIVATE INPUT_FOLDER="${CMAKE_SOURCE_DIR}/../input")
+target_compile_options(main PRIVATE ${ENABLE_COMPILER_WARNINGS})
 
 find_package(Catch2 CONFIG REQUIRED)
 
@@ -54,4 +62,4 @@ add_executable(test
   test/symbol.cpp
   test/bitstream.cpp)
 target_link_libraries(test PRIVATE lib Catch2::Catch2)
-
+target_compile_options(test PRIVATE ${ENABLE_COMPILER_WARNINGS})

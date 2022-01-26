@@ -18,8 +18,8 @@ struct heightmap
     auto operator==(const heightmap&) const -> bool = default;
 
   private:
-    [[nodiscard]] auto get(int i, int j) const -> int;
-    [[nodiscard]] auto flood(int i, int j) -> int;
+    [[nodiscard]] auto get(uint64_t i, uint64_t j) const -> int;
+    [[nodiscard]] auto flood(uint64_t i, uint64_t j) -> int;
     std::vector<std::vector<int>> heightmap_;
     std::set<std::pair<int, int>> flooded_;
 };

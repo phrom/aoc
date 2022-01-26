@@ -6,6 +6,7 @@ std::unordered_map<std::string, uint64_t> symbol::string_to_handle_;
 std::vector<std::string_view> symbol::handle_to_string_;
 
 symbol::symbol(std::string string)
+    : symbol_{}
 {
     auto it = string_to_handle_.find(string);
     if (it == string_to_handle_.end()) {

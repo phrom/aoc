@@ -9,9 +9,10 @@ namespace day9 {
 
 heightmap::heightmap(std::vector<std::vector<int>> heightmap)
     : heightmap_{ std::move(heightmap) }
+    , flooded_{}
 {}
 
-auto heightmap::get(int i, int j) const -> int
+auto heightmap::get(uint64_t i, uint64_t j) const -> int
 {
     if (i < heightmap_.size() && j < heightmap_[i].size()) {
         return heightmap_[i][j];
@@ -22,8 +23,8 @@ auto heightmap::get(int i, int j) const -> int
 auto heightmap::total_risk() const -> int
 {
     int total = 0;
-    for (int i = 0; i < heightmap_.size(); ++i) {
-        for (int j = 0; j < heightmap_[i].size(); ++j) {
+    for (uint64_t i = 0; i < heightmap_.size(); ++i) {
+        for (uint64_t j = 0; j < heightmap_[i].size(); ++j) {
             if (heightmap_[i][j] < get(i - 1, j) &&
                 heightmap_[i][j] < get(i, j - 1) &&
                 heightmap_[i][j] < get(i + 1, j) &&
@@ -35,7 +36,7 @@ auto heightmap::total_risk() const -> int
     return total;
 }
 
-auto heightmap::flood(int i, int j) -> int
+auto heightmap::flood(uint64_t i, uint64_t j) -> int
 {
     if (get(i, j) == 9 || flooded_.contains({ i, j })) {
         return 0;
@@ -48,8 +49,8 @@ auto heightmap::flood(int i, int j) -> int
 auto heightmap::largest_basins() -> int
 {
     std::priority_queue<int> basin_size;
-    for (int i = 0; i < heightmap_.size(); ++i) {
-        for (int j = 0; j < heightmap_[i].size(); ++j) {
+    for (uint64_t i = 0; i < heightmap_.size(); ++i) {
+        for (uint64_t j = 0; j < heightmap_[i].size(); ++j) {
             if (heightmap_[i][j] != 9 && !flooded_.contains({ i, j })) {
                 basin_size.push(flood(i, j));
             }

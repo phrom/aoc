@@ -1,9 +1,9 @@
 #include "day4.hpp"
 
+#include <algorithm>
 #include <set>
 #include <sstream>
 #include <string>
-#include <algorithm>
 
 namespace day4 {
 
@@ -22,8 +22,8 @@ auto parse(std::string_view input) -> game
     }
     do {
         game.boards.push_back({});
-        for (int i = 0; i < 5; ++i) {
-            for (int j = 0; j < 5; ++j) {
+        for (uint64_t i = 0; i < 5; ++i) {
+            for (uint64_t j = 0; j < 5; ++j) {
                 iss >> game.boards.back()[i][j];
             }
         }
@@ -34,8 +34,8 @@ auto parse(std::string_view input) -> game
 
 auto bingo(const board& board, const std::set<int>& numbers_drawn) -> bool
 {
-    for (int row = 0; row < 5; ++row) {
-        for (int column = 0; column < 5; ++column) {
+    for (uint64_t row = 0; row < 5; ++row) {
+        for (uint64_t column = 0; column < 5; ++column) {
             if (!numbers_drawn.contains(board[row][column])) {
                 goto next_row;
             }
@@ -43,8 +43,8 @@ auto bingo(const board& board, const std::set<int>& numbers_drawn) -> bool
         return true;
     next_row:;
     }
-    for (int column = 0; column < 5; ++column) {
-        for (int row = 0; row < 5; ++row) {
+    for (uint64_t column = 0; column < 5; ++column) {
+        for (uint64_t row = 0; row < 5; ++row) {
             if (!numbers_drawn.contains(board[row][column])) {
                 goto next_column;
             }
@@ -58,8 +58,8 @@ auto bingo(const board& board, const std::set<int>& numbers_drawn) -> bool
 auto score(const board& board, const std::set<int>& numbers_drawn) -> int
 {
     int score = 0;
-    for (int row = 0; row < 5; ++row) {
-        for (int column = 0; column < 5; ++column) {
+    for (uint64_t row = 0; row < 5; ++row) {
+        for (uint64_t column = 0; column < 5; ++column) {
             if (!numbers_drawn.contains(board[row][column])) {
                 score += board[row][column];
             }
@@ -76,14 +76,14 @@ auto winning_scores(std::string_view input) -> std::vector<int>
     for (int number : game.numbers) {
         numbers_drawn.insert(number);
         if (numbers_drawn.size() > 5) {
-            for (int i = 0; i < game.boards.size(); ++i) {
+            for (uint64_t i = 0; i < game.boards.size(); ++i) {
                 if (bingo(game.boards[i], numbers_drawn)) {
                     scores.push_back(
                         score(game.boards[i], numbers_drawn) * number);
-                    game.boards.erase(game.boards.begin() + i);
+                    game.boards.erase(
+                        game.boards.begin() + static_cast<int>(i));
                     --i;
                 }
-            
             }
         }
     }

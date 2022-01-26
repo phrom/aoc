@@ -29,17 +29,17 @@ struct instruction
         y
     };
 
-    instruction(axis axis, int coord);
+    instruction(axis axis, uint64_t coord);
 
     [[nodiscard]] auto get_axis() const -> axis;
-    [[nodiscard]] auto get_coord() const -> int;
+    [[nodiscard]] auto get_coord() const -> uint64_t;
 
     auto operator==(const instruction&) const -> bool = default;
 
   private:
     friend std::ostream& operator<<(std::ostream& out, const instruction&);
     enum axis axis_;
-    int coord_;
+    uint64_t coord_;
 };
 
 struct manual

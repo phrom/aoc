@@ -15,13 +15,15 @@ void cavern::flash(std::array<std::array<bool, 10>, 10>& flashed, int i, int j)
 {
     const auto recur = [&](int i, int j) {
         if (i >= 0 && i < 10 && j >= 0 && j < 10) {
-            octopus_[i][j]++;
+            octopus_[static_cast<uint64_t>(i)][static_cast<uint64_t>(j)]++;
             flash(flashed, i, j);
         }
     };
 
-    if (octopus_[i][j] > 9 && !flashed[i][j]) {
-        flashed[i][j] = true;
+    auto ui = static_cast<uint64_t>(i);
+    auto uj = static_cast<uint64_t>(j);
+    if (octopus_[ui][uj] > 9 && !flashed[ui][uj]) {
+        flashed[ui][uj] = true;
         recur(i - 1, j - 1);
         recur(i - 1, j);
         recur(i - 1, j + 1);
@@ -35,13 +37,13 @@ void cavern::flash(std::array<std::array<bool, 10>, 10>& flashed, int i, int j)
 
 auto cavern::update() -> uint64_t
 {
-    for (int i = 0; i < 10; ++i) {
-        for (int j = 0; j < 10; ++j) {
+    for (uint64_t i = 0; i < 10; ++i) {
+        for (uint64_t j = 0; j < 10; ++j) {
             octopus_[i][j]++;
         }
     }
 
-    std::array<std::array<bool, 10>, 10> flashed = { false };
+    std::array<std::array<bool, 10>, 10> flashed{};
     for (int i = 0; i < 10; ++i) {
         for (int j = 0; j < 10; ++j) {
             flash(flashed, i, j);
@@ -49,8 +51,8 @@ auto cavern::update() -> uint64_t
     }
 
     uint64_t result = 0;
-    for (int i = 0; i < 10; ++i) {
-        for (int j = 0; j < 10; ++j) {
+    for (uint64_t i = 0; i < 10; ++i) {
+        for (uint64_t j = 0; j < 10; ++j) {
             if (flashed[i][j]) {
                 octopus_[i][j] = 0;
                 flashes_++;
@@ -71,14 +73,14 @@ auto parse(std::string_view input) -> cavern
     std::istringstream iss{ std::string{ input } };
     std::string line;
     std::array<std::array<uint64_t, 10>, 10> octopus;
-    int row = 0;
+    uint64_t row = 0;
     while (std::getline(iss, line)) {
         std::istringstream lss{ line };
-        int column = 0;
+        uint64_t column = 0;
         while (lss.good()) {
-            char c = -1;
+            unsigned char c = 0;
             lss >> c;
-            if (c != -1) {
+            if (c != 0) {
                 octopus[row][column++] = c - '0';
             }
         }
@@ -99,7 +101,7 @@ auto part1(std::string_view input) -> uint64_t
 auto part2(std::string_view input) -> uint64_t
 {
     auto cavern = parse(input);
-    int step = 1;
+    uint64_t step = 1;
     while (cavern.update() != 100) {
         step++;
     }

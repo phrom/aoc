@@ -15,8 +15,9 @@ paper::paper(matrix<bool> paper)
 void paper::fold(const struct instruction& instruction)
 {
     if (instruction.get_axis() == instruction::axis::x) {
-        for (int i = 0; i < paper_.rows(); ++i) {
-            for (int j = instruction.get_coord(); j < paper_.columns(i); ++j) {
+        for (uint64_t i = 0; i < paper_.rows(); ++i) {
+            for (uint64_t j = instruction.get_coord(); j < paper_.columns(i);
+                 ++j) {
                 if (paper_.get(i, j)) {
                     paper_.set(i, 2 * instruction.get_coord() - j, true);
                 }
@@ -25,8 +26,8 @@ void paper::fold(const struct instruction& instruction)
         paper_.remove_columns(instruction.get_coord());
     }
     if (instruction.get_axis() == instruction::axis::y) {
-        for (int i = instruction.get_coord(); i < paper_.rows(); ++i) {
-            for (int j = 0; j < paper_.columns(i); ++j) {
+        for (uint64_t i = instruction.get_coord(); i < paper_.rows(); ++i) {
+            for (uint64_t j = 0; j < paper_.columns(i); ++j) {
                 if (paper_.get(i, j)) {
                     paper_.set(2 * instruction.get_coord() - i, j, true);
                 }
@@ -39,8 +40,8 @@ void paper::fold(const struct instruction& instruction)
 auto paper::visible_dots() const -> std::vector<std::pair<int, int>>
 {
     std::vector<std::pair<int, int>> result;
-    for (int i = 0; i < paper_.rows(); ++i) {
-        for (int j = 0; j < paper_.columns(i); ++j) {
+    for (uint64_t i = 0; i < paper_.rows(); ++i) {
+        for (uint64_t j = 0; j < paper_.columns(i); ++j) {
             if (paper_.get(i, j)) {
                 result.emplace_back(i, j);
             }
@@ -54,7 +55,7 @@ std::ostream& operator<<(std::ostream& out, const paper& paper)
     return out << "paper {\n" << paper.paper_ << "\n}";
 }
 
-instruction::instruction(axis axis, int coord)
+instruction::instruction(axis axis, uint64_t coord)
     : axis_{ axis }
     , coord_{ coord }
 {}
@@ -64,7 +65,7 @@ auto instruction::get_axis() const -> axis
     return axis_;
 }
 
-auto instruction::get_coord() const -> int
+auto instruction::get_coord() const -> uint64_t
 {
     return coord_;
 }
@@ -118,7 +119,7 @@ auto parse(std::string_view input) -> manual
             break;
         }
         std::istringstream lss{ line };
-        int x, y;
+        uint64_t x, y;
         char comma;
         lss >> x >> comma >> y;
         paper.set(y, x, true);

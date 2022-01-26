@@ -36,7 +36,7 @@ auto part2(std::string_view input) -> int
     int prev = 0;
     int next = 0;
     int count = -1;
-    for (int i = 0; i < numbers.size() - 2; ++i) {
+    for (uint64_t i = 0; i < numbers.size() - 2; ++i) {
         next = numbers[i] + numbers[i + 1] + numbers[i + 2];
         if (next > prev) {
             count += 1;

@@ -208,7 +208,7 @@ enum class packet_type
 auto parse(bitstream& bss, uint64_t* bits_read = nullptr)
     -> std::unique_ptr<packet>
 {
-    const auto read = [&](int b) {
+    const auto read = [&](uint64_t b) {
         if (bits_read != nullptr) {
             *bits_read += b;
         }
@@ -240,7 +240,7 @@ auto parse(bitstream& bss, uint64_t* bits_read = nullptr)
     } else {
         uint64_t number_of_subpackets = read(11);
         subpackets.reserve(number_of_subpackets);
-        for (auto i = 0; i < number_of_subpackets; ++i) {
+        for (uint64_t i = 0; i < number_of_subpackets; ++i) {
             uint64_t subpacket_length = 0;
             subpackets.emplace_back(parse(bss, &subpacket_length));
             total_length += subpacket_length;
