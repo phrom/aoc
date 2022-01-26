@@ -18,12 +18,12 @@ struct packet
 
     [[nodiscard]] virtual auto get_value() const -> uint64_t = 0;
     [[nodiscard]] virtual auto get_subpackets() const -> const subpackets& = 0;
+    virtual auto print(std::ostream&) const -> std::ostream& = 0;
 
     [[nodiscard]] auto get_version() const -> uint64_t;
     [[nodiscard]] auto get_version_sum() const -> uint64_t;
 
   private:
-    friend auto operator<<(std::ostream&, const packet&) -> std::ostream&;
     uint64_t version_;
 };
 
@@ -33,6 +33,7 @@ struct literal_packet : packet
 
     [[nodiscard]] auto get_value() const -> uint64_t override;
     [[nodiscard]] auto get_subpackets() const -> const subpackets& override;
+    auto print(std::ostream&) const -> std::ostream& override;
 
   private:
     friend auto operator<<(std::ostream&, const literal_packet&)
@@ -47,6 +48,9 @@ struct operator_packet : packet
 
     [[nodiscard]] auto get_subpackets() const -> const subpackets& override;
 
+  protected:
+    auto print(std::ostream&, std::string_view name) const -> std::ostream&;
+
   private:
     friend auto operator<<(std::ostream&, const operator_packet&)
         -> std::ostream&;
@@ -57,42 +61,49 @@ struct sum_packet : operator_packet
 {
     sum_packet(uint64_t version, subpackets subpackets);
     [[nodiscard]] auto get_value() const -> uint64_t override;
+    [[nodiscard]] auto print(std::ostream&) const -> std::ostream& override;
 };
 
 struct product_packet : operator_packet
 {
     product_packet(uint64_t version, subpackets subpackets);
     [[nodiscard]] auto get_value() const -> uint64_t override;
+    [[nodiscard]] auto print(std::ostream&) const -> std::ostream& override;
 };
 
 struct minimum_packet : operator_packet
 {
     minimum_packet(uint64_t version, subpackets subpackets);
     [[nodiscard]] auto get_value() const -> uint64_t override;
+    [[nodiscard]] auto print(std::ostream&) const -> std::ostream& override;
 };
 
 struct maximum_packet : operator_packet
 {
     maximum_packet(uint64_t version, subpackets subpackets);
     [[nodiscard]] auto get_value() const -> uint64_t override;
+    [[nodiscard]] auto print(std::ostream&) const -> std::ostream& override;
 };
 
 struct greater_than_packet : operator_packet
 {
     greater_than_packet(uint64_t version, subpackets subpackets);
     [[nodiscard]] auto get_value() const -> uint64_t override;
+    [[nodiscard]] auto print(std::ostream&) const -> std::ostream& override;
 };
 
 struct less_than_packet : operator_packet
 {
     less_than_packet(uint64_t version, subpackets subpackets);
     [[nodiscard]] auto get_value() const -> uint64_t override;
+    [[nodiscard]] auto print(std::ostream&) const -> std::ostream& override;
 };
 
 struct equal_to_packet : operator_packet
 {
     equal_to_packet(uint64_t version, subpackets subpackets);
     [[nodiscard]] auto get_value() const -> uint64_t override;
+    [[nodiscard]] auto print(std::ostream&) const -> std::ostream& override;
 };
 
 auto parse(std::string_view input) -> std::unique_ptr<packet>;

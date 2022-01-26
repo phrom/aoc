@@ -28,10 +28,10 @@ auto literal_packet::get_subpackets() const -> const subpackets&
     return empty;
 }
 
-auto operator<<(std::ostream& out, const literal_packet& packet)
-    -> std::ostream&
+auto literal_packet::print(std::ostream& out) const -> std::ostream&
 {
-    return out << "literal_packet { " << packet.value_ << " }";
+    return out << "literal_packet { " << get_version() << ", " << value_
+               << " }";
 }
 
 operator_packet::operator_packet(uint64_t version, subpackets subpackets)
@@ -44,10 +44,14 @@ auto operator_packet::get_subpackets() const -> const subpackets&
     return subpackets_;
 }
 
-auto operator<<(std::ostream& out, const operator_packet& packet)
+auto operator_packet::print(std::ostream& out, std::string_view name) const
     -> std::ostream&
 {
-    return out << "operator_packet { " << packet.subpackets_ << " }";
+    out << name << " { " << get_version() << ", [ ";
+    for (const auto& subpacket : subpackets_) {
+        subpacket->print(out) << ", ";
+    }
+    return out << " ] }";
 }
 
 packet::packet(uint64_t version)
@@ -57,11 +61,6 @@ packet::packet(uint64_t version)
 auto packet::get_version() const -> uint64_t
 {
     return version_;
-}
-
-auto operator<<(std::ostream& out, const packet& packet) -> std::ostream&
-{
-    return out << "packet { " << packet.version_ << " }";
 }
 
 sum_packet::sum_packet(uint64_t version, subpackets subpackets)
@@ -79,6 +78,11 @@ auto sum_packet::get_value() const -> uint64_t
         });
 }
 
+auto sum_packet::print(std::ostream& out) const -> std::ostream&
+{
+    return operator_packet::print(out, "sum_packet");
+}
+
 product_packet::product_packet(uint64_t version, subpackets subpackets)
     : operator_packet{ version, std::move(subpackets) }
 {}
@@ -92,6 +96,11 @@ auto product_packet::get_value() const -> uint64_t
         [](uint64_t total, const auto& packet) {
             return total * packet->get_value();
         });
+}
+
+auto product_packet::print(std::ostream& out) const -> std::ostream&
+{
+    return operator_packet::print(out, "product_packet");
 }
 
 minimum_packet::minimum_packet(uint64_t version, subpackets subpackets)
@@ -109,6 +118,11 @@ auto minimum_packet::get_value() const -> uint64_t
         ->get_value();
 }
 
+auto minimum_packet::print(std::ostream& out) const -> std::ostream&
+{
+    return operator_packet::print(out, "minimum_packet");
+}
+
 maximum_packet::maximum_packet(uint64_t version, subpackets subpackets)
     : operator_packet{ version, std::move(subpackets) }
 {}
@@ -124,6 +138,11 @@ auto maximum_packet::get_value() const -> uint64_t
         ->get_value();
 }
 
+auto maximum_packet::print(std::ostream& out) const -> std::ostream&
+{
+    return operator_packet::print(out, "maximum_packet");
+}
+
 greater_than_packet::greater_than_packet(
     uint64_t version,
     subpackets subpackets)
@@ -137,6 +156,11 @@ auto greater_than_packet::get_value() const -> uint64_t
         get_subpackets().back()->get_value());
 }
 
+auto greater_than_packet::print(std::ostream& out) const -> std::ostream&
+{
+    return operator_packet::print(out, "greater_than_packet");
+}
+
 less_than_packet::less_than_packet(uint64_t version, subpackets subpackets)
     : operator_packet{ version, std::move(subpackets) }
 {}
@@ -148,6 +172,11 @@ auto less_than_packet::get_value() const -> uint64_t
         get_subpackets().back()->get_value());
 }
 
+auto less_than_packet::print(std::ostream& out) const -> std::ostream&
+{
+    return operator_packet::print(out, "less_than_packet");
+}
+
 equal_to_packet::equal_to_packet(uint64_t version, subpackets subpackets)
     : operator_packet{ version, std::move(subpackets) }
 {}
@@ -157,6 +186,11 @@ auto equal_to_packet::get_value() const -> uint64_t
     return static_cast<uint64_t>(
         get_subpackets().front()->get_value() ==
         get_subpackets().back()->get_value());
+}
+
+auto equal_to_packet::print(std::ostream& out) const -> std::ostream&
+{
+    return operator_packet::print(out, "equal_to_packet");
 }
 
 enum class packet_type
