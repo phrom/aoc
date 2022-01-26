@@ -7,6 +7,7 @@
 #include <map>
 #include <queue>
 #include <set>
+#include <variant>
 #include <vector>
 
 template<typename T>
@@ -63,6 +64,14 @@ auto operator<<(std::ostream& out, const std::map<K, V>& map) -> std::ostream&
         out << p << ", ";
     }
     return out << " }";
+}
+
+template<typename... Args>
+auto operator<<(std::ostream& out, const std::variant<Args...>& variant)
+    -> std::ostream&
+{
+    std::visit([&](const auto& x) { out << x; }, variant);
+    return out;
 }
 
 #endif

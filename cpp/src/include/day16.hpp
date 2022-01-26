@@ -2,54 +2,53 @@
 #define AOC_DAY16_HPP
 
 #include <string_view>
+#include <variant>
+#include <vector>
+
+struct bitstream;
 
 namespace day16 {
 
-#pragma pack(push, r1, 1)
-struct packet_header
-{
-    unsigned int version : 3;
-    unsigned int header_type_id : 3;
-};
-
 struct literal_packet
 {
-    bool has_next : 1;
-    unsigned char bits : 4;
+    explicit literal_packet(uint64_t value);
+
+    [[nodiscard]] auto get_value() const -> uint64_t;
+
+  private:
+    friend auto operator<<(std::ostream&, const literal_packet&)
+        -> std::ostream&;
+    uint64_t value_;
 };
 
 struct operator_packet
 {
-    enum class length_type
-    {
-        total_length = 0,
-        number_of_subpackets = 1
-    } length_type : 1;
+    using subpackets = std::vector<struct packet>;
+    explicit operator_packet(subpackets subpackets);
+    operator_packet(operator_packet&&) noexcept = default;
 
-    union
-    {
-        unsigned int total_length : 15;
-        unsigned int number_of_subpackets : 11;
-    };
+    [[nodiscard]] auto get_version_sum() const -> uint64_t;
 
-    unsigned char* subpackets;
+  private:
+    friend auto operator<<(std::ostream&, const operator_packet&)
+        -> std::ostream&;
+    subpackets subpackets_;
 };
 
 struct packet
 {
-    packet_header header;
-    union
-    {
-        literal_packet* lit;
-        operator_packet* op;
-    };
+    packet(uint64_t version, literal_packet value);
+    packet(uint64_t version, operator_packet value);
+
+    [[nodiscard]] auto get_version_sum() const -> uint64_t;
+
+  private:
+    friend auto operator<<(std::ostream&, const packet&) -> std::ostream&;
+    uint64_t version_;
+    std::variant<literal_packet, operator_packet> value_;
 };
-#pragma pack(pop)
 
-struct transmission
-{};
-
-auto parse(std::string_view input) -> transmission;
+auto parse(std::string_view input) -> packet;
 auto part1(std::string_view input) -> uint64_t;
 auto part2(std::string_view input) -> uint64_t;
 
