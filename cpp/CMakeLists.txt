@@ -7,7 +7,7 @@ set(ENABLE_COMPILER_WARNINGS
      $<$<OR:$<CXX_COMPILER_ID:Clang>,$<CXX_COMPILER_ID:AppleClang>,$<CXX_COMPILER_ID:GNU>>:
           -Wall -Wextra -Weffc++ -Wconversion -Wsign-conversion -pedantic>
      $<$<CXX_COMPILER_ID:MSVC>:
-          /W4 /WX>)
+          /W4>)
 
 find_package(Boost REQUIRED)
 add_library(lib
