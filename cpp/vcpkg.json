@@ -3,6 +3,7 @@
   "name": "aoc",
   "version": "1.0",
   "dependencies": [
-      "catch2"
+      "catch2",
+      "boost-multiprecision"
   ]
 }

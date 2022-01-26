@@ -17,7 +17,7 @@ literal_packet::literal_packet(uint64_t version, uint64_t value)
     , value_{ value }
 {}
 
-auto literal_packet::get_value() const -> uint64_t
+auto literal_packet::get_value() const -> uint128_t
 {
     return value_;
 }
@@ -67,13 +67,13 @@ sum_packet::sum_packet(uint64_t version, subpackets subpackets)
     : operator_packet{ version, std::move(subpackets) }
 {}
 
-auto sum_packet::get_value() const -> uint64_t
+auto sum_packet::get_value() const -> uint128_t
 {
     return std::accumulate(
         get_subpackets().begin(),
         get_subpackets().end(),
-        0,
-        [](uint64_t total, const auto& packet) {
+        uint128_t{ 0 },
+        [](uint128_t total, const auto& packet) {
             return total + packet->get_value();
         });
 }
@@ -87,13 +87,13 @@ product_packet::product_packet(uint64_t version, subpackets subpackets)
     : operator_packet{ version, std::move(subpackets) }
 {}
 
-auto product_packet::get_value() const -> uint64_t
+auto product_packet::get_value() const -> uint128_t
 {
     return std::accumulate(
         get_subpackets().begin(),
         get_subpackets().end(),
-        1,
-        [](uint64_t total, const auto& packet) {
+        uint128_t{ 1 },
+        [](uint128_t total, const auto& packet) {
             return total * packet->get_value();
         });
 }
@@ -107,7 +107,7 @@ minimum_packet::minimum_packet(uint64_t version, subpackets subpackets)
     : operator_packet{ version, std::move(subpackets) }
 {}
 
-auto minimum_packet::get_value() const -> uint64_t
+auto minimum_packet::get_value() const -> uint128_t
 {
     return (*std::min_element(
                 get_subpackets().begin(),
@@ -127,7 +127,7 @@ maximum_packet::maximum_packet(uint64_t version, subpackets subpackets)
     : operator_packet{ version, std::move(subpackets) }
 {}
 
-auto maximum_packet::get_value() const -> uint64_t
+auto maximum_packet::get_value() const -> uint128_t
 {
     return (*std::max_element(
                 get_subpackets().begin(),
@@ -149,9 +149,9 @@ greater_than_packet::greater_than_packet(
     : operator_packet{ version, std::move(subpackets) }
 {}
 
-auto greater_than_packet::get_value() const -> uint64_t
+auto greater_than_packet::get_value() const -> uint128_t
 {
-    return static_cast<uint64_t>(
+    return static_cast<uint128_t>(
         get_subpackets().front()->get_value() >
         get_subpackets().back()->get_value());
 }
@@ -165,9 +165,9 @@ less_than_packet::less_than_packet(uint64_t version, subpackets subpackets)
     : operator_packet{ version, std::move(subpackets) }
 {}
 
-auto less_than_packet::get_value() const -> uint64_t
+auto less_than_packet::get_value() const -> uint128_t
 {
-    return static_cast<uint64_t>(
+    return static_cast<uint128_t>(
         get_subpackets().front()->get_value() <
         get_subpackets().back()->get_value());
 }
@@ -181,9 +181,9 @@ equal_to_packet::equal_to_packet(uint64_t version, subpackets subpackets)
     : operator_packet{ version, std::move(subpackets) }
 {}
 
-auto equal_to_packet::get_value() const -> uint64_t
+auto equal_to_packet::get_value() const -> uint128_t
 {
-    return static_cast<uint64_t>(
+    return static_cast<uint128_t>(
         get_subpackets().front()->get_value() ==
         get_subpackets().back()->get_value());
 }
@@ -285,21 +285,21 @@ auto parse(std::string_view input) -> std::unique_ptr<packet>
     return parse(bss);
 }
 
-auto get_version_sum(const packet& packet) -> uint64_t
+auto get_version_sum(const packet& packet) -> uint128_t
 {
-    uint64_t version_sum = packet.get_version();
+    uint128_t version_sum = packet.get_version();
     for (const auto& subpacket : packet.get_subpackets()) {
         version_sum += get_version_sum(*subpacket);
     }
     return version_sum;
 }
 
-auto part1(std::string_view input) -> uint64_t
+auto part1(std::string_view input) -> uint128_t
 {
     return get_version_sum(*parse(input));
 }
 
-auto part2(std::string_view input) -> uint64_t
+auto part2(std::string_view input) -> uint128_t
 {
     return parse(input)->get_value();
 }

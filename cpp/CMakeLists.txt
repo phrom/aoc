@@ -4,6 +4,7 @@ project(cpp)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
+find_package(Boost REQUIRED)
 add_library(lib
   src/day1.cpp
   src/day2.cpp
@@ -24,6 +25,7 @@ add_library(lib
   src/symbol.cpp
   src/bitstream.cpp)
 target_include_directories(lib PUBLIC src/include)
+target_link_libraries(lib PUBLIC Boost::headers)
 
 add_executable(main src/main.cpp)
 target_link_libraries(main PRIVATE lib)
