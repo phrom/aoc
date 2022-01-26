@@ -12,13 +12,20 @@
 namespace day16 {
 using ::operator<<;
 
-literal_packet::literal_packet(uint64_t value)
-    : value_{ value }
+literal_packet::literal_packet(uint64_t version, uint64_t value)
+    : packet{ version }
+    , value_{ value }
 {}
 
 auto literal_packet::get_value() const -> uint64_t
 {
     return value_;
+}
+
+auto literal_packet::get_subpackets() const -> const subpackets&
+{
+    static const subpackets empty{};
+    return empty;
 }
 
 auto operator<<(std::ostream& out, const literal_packet& packet)
@@ -27,19 +34,14 @@ auto operator<<(std::ostream& out, const literal_packet& packet)
     return out << "literal_packet { " << packet.value_ << " }";
 }
 
-operator_packet::operator_packet(subpackets subpackets)
-    : subpackets_{ std::move(subpackets) }
+operator_packet::operator_packet(uint64_t version, subpackets subpackets)
+    : packet{ version }
+    , subpackets_{ std::move(subpackets) }
 {}
 
-auto operator_packet::get_version_sum() const -> uint64_t
+auto operator_packet::get_subpackets() const -> const subpackets&
 {
-    return std::accumulate(
-        subpackets_.begin(),
-        subpackets_.end(),
-        0U,
-        [](uint64_t total, const packet& packet) {
-            return total + packet.get_version_sum();
-        });
+    return subpackets_;
 }
 
 auto operator<<(std::ostream& out, const operator_packet& packet)
@@ -48,32 +50,99 @@ auto operator<<(std::ostream& out, const operator_packet& packet)
     return out << "operator_packet { " << packet.subpackets_ << " }";
 }
 
-packet::packet(uint64_t version, literal_packet value)
+packet::packet(uint64_t version)
     : version_{ version }
-    , value_{ value }
 {}
 
-packet::packet(uint64_t version, operator_packet value)
-    : version_{ version }
-    , value_{ std::move(value) }
-{}
-
-auto packet::get_version_sum() const -> uint64_t
+auto packet::get_version() const -> uint64_t
 {
-    uint64_t version_sum = version_;
-    if (std::holds_alternative<operator_packet>(value_)) {
-        version_sum += std::get<operator_packet>(value_).get_version_sum();
-    }
-    return version_sum;
+    return version_;
 }
 
 auto operator<<(std::ostream& out, const packet& packet) -> std::ostream&
 {
-    return out << "packet { " << packet.version_ << ", " << packet.value_
-               << " }";
+    return out << "packet { " << packet.version_ << " }";
 }
 
-auto parse(bitstream& bss, uint64_t* bits_read = nullptr) -> packet
+sum_packet::sum_packet(uint64_t version, subpackets subpackets)
+    : operator_packet{ version, std::move(subpackets) }
+{}
+
+auto sum_packet::get_value() const -> uint64_t
+{
+    return 0;
+}
+
+product_packet::product_packet(uint64_t version, subpackets subpackets)
+    : operator_packet{ version, std::move(subpackets) }
+{}
+
+auto product_packet::get_value() const -> uint64_t
+{
+    return 0;
+}
+
+minimum_packet::minimum_packet(uint64_t version, subpackets subpackets)
+    : operator_packet{ version, std::move(subpackets) }
+{}
+
+auto minimum_packet::get_value() const -> uint64_t
+{
+    return 0;
+}
+
+maximum_packet::maximum_packet(uint64_t version, subpackets subpackets)
+    : operator_packet{ version, std::move(subpackets) }
+{}
+
+auto maximum_packet::get_value() const -> uint64_t
+{
+    return 0;
+}
+
+greater_than_packet::greater_than_packet(
+    uint64_t version,
+    subpackets subpackets)
+    : operator_packet{ version, std::move(subpackets) }
+{}
+
+auto greater_than_packet::get_value() const -> uint64_t
+{
+    return 0;
+}
+
+less_than_packet::less_than_packet(uint64_t version, subpackets subpackets)
+    : operator_packet{ version, std::move(subpackets) }
+{}
+
+auto less_than_packet::get_value() const -> uint64_t
+{
+    return 0;
+}
+
+equal_to_packet::equal_to_packet(uint64_t version, subpackets subpackets)
+    : operator_packet{ version, std::move(subpackets) }
+{}
+
+auto equal_to_packet::get_value() const -> uint64_t
+{
+    return 0;
+}
+
+enum class packet_type
+{
+    sum = 0,
+    product = 1,
+    minimum = 2,
+    maximum = 3,
+    literal = 4,
+    greater_than = 5,
+    less_than = 6,
+    equal_to = 7
+};
+
+auto parse(bitstream& bss, uint64_t* bits_read = nullptr)
+    -> std::unique_ptr<packet>
 {
     const auto read = [&](int b) {
         if (bits_read != nullptr) {
@@ -82,8 +151,8 @@ auto parse(bitstream& bss, uint64_t* bits_read = nullptr) -> packet
         return bss.read(b);
     };
     uint64_t version = read(3);
-    uint64_t type_id = read(3);
-    if (type_id == 4) {
+    auto type_id = static_cast<packet_type>(read(3));
+    if (type_id == packet_type::literal) {
         uint64_t has_next = 0;
         uint64_t value = 0;
         do {
@@ -91,10 +160,10 @@ auto parse(bitstream& bss, uint64_t* bits_read = nullptr) -> packet
             value <<= 4;
             value |= read(4);
         } while (has_next != 0U);
-        return packet{ version, literal_packet{ value } };
+        return std::make_unique<literal_packet>(version, value);
     }
     uint64_t length_type_id = read(1);
-    std::vector<packet> subpackets;
+    subpackets subpackets;
     uint64_t total_length = 0;
     if (length_type_id == 0) {
         total_length = read(15);
@@ -116,10 +185,34 @@ auto parse(bitstream& bss, uint64_t* bits_read = nullptr) -> packet
     if (bits_read != nullptr) {
         *bits_read += total_length;
     }
-    return packet{ version, operator_packet{ std::move(subpackets) } };
+    switch (type_id) {
+        case packet_type::sum:
+            return std::make_unique<sum_packet>(version, std::move(subpackets));
+        case packet_type::product:
+            return std::make_unique<product_packet>(
+                version, std::move(subpackets));
+        case packet_type::minimum:
+            return std::make_unique<minimum_packet>(
+                version, std::move(subpackets));
+        case packet_type::maximum:
+            return std::make_unique<maximum_packet>(
+                version, std::move(subpackets));
+        case packet_type::greater_than:
+            return std::make_unique<greater_than_packet>(
+                version, std::move(subpackets));
+        case packet_type::less_than:
+            return std::make_unique<less_than_packet>(
+                version, std::move(subpackets));
+        case packet_type::equal_to:
+            return std::make_unique<equal_to_packet>(
+                version, std::move(subpackets));
+        case packet_type::literal:
+        default:
+            exit(1);
+    };
 }
 
-auto parse(std::string_view input) -> packet
+auto parse(std::string_view input) -> std::unique_ptr<packet>
 {
     std::istringstream iss{ std::string{ input } };
     std::string line;
@@ -128,14 +221,23 @@ auto parse(std::string_view input) -> packet
     return parse(bss);
 }
 
+auto get_version_sum(const packet& packet) -> uint64_t
+{
+    uint64_t version_sum = packet.get_version();
+    for (const auto& subpacket : packet.get_subpackets()) {
+        version_sum += get_version_sum(*subpacket);
+    }
+    return version_sum;
+}
+
 auto part1(std::string_view input) -> uint64_t
 {
-    return parse(input).get_version_sum();
+    return get_version_sum(*parse(input));
 }
 
 auto part2(std::string_view input) -> uint64_t
 {
-    return 0;
+    return parse(input)->get_value();
 }
 
 } // namespace day16
