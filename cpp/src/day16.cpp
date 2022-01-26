@@ -70,7 +70,13 @@ sum_packet::sum_packet(uint64_t version, subpackets subpackets)
 
 auto sum_packet::get_value() const -> uint64_t
 {
-    return 0;
+    return std::accumulate(
+        get_subpackets().begin(),
+        get_subpackets().end(),
+        0,
+        [](uint64_t total, const auto& packet) {
+            return total + packet->get_value();
+        });
 }
 
 product_packet::product_packet(uint64_t version, subpackets subpackets)
@@ -79,7 +85,13 @@ product_packet::product_packet(uint64_t version, subpackets subpackets)
 
 auto product_packet::get_value() const -> uint64_t
 {
-    return 0;
+    return std::accumulate(
+        get_subpackets().begin(),
+        get_subpackets().end(),
+        1,
+        [](uint64_t total, const auto& packet) {
+            return total * packet->get_value();
+        });
 }
 
 minimum_packet::minimum_packet(uint64_t version, subpackets subpackets)
@@ -88,7 +100,13 @@ minimum_packet::minimum_packet(uint64_t version, subpackets subpackets)
 
 auto minimum_packet::get_value() const -> uint64_t
 {
-    return 0;
+    return (*std::min_element(
+                get_subpackets().begin(),
+                get_subpackets().end(),
+                [](const auto& lhs, const auto& rhs) {
+                    return lhs->get_value() < rhs->get_value();
+                }))
+        ->get_value();
 }
 
 maximum_packet::maximum_packet(uint64_t version, subpackets subpackets)
@@ -97,7 +115,13 @@ maximum_packet::maximum_packet(uint64_t version, subpackets subpackets)
 
 auto maximum_packet::get_value() const -> uint64_t
 {
-    return 0;
+    return (*std::max_element(
+                get_subpackets().begin(),
+                get_subpackets().end(),
+                [](const auto& lhs, const auto& rhs) {
+                    return lhs->get_value() < rhs->get_value();
+                }))
+        ->get_value();
 }
 
 greater_than_packet::greater_than_packet(
@@ -108,7 +132,9 @@ greater_than_packet::greater_than_packet(
 
 auto greater_than_packet::get_value() const -> uint64_t
 {
-    return 0;
+    return static_cast<uint64_t>(
+        get_subpackets().front()->get_value() >
+        get_subpackets().back()->get_value());
 }
 
 less_than_packet::less_than_packet(uint64_t version, subpackets subpackets)
@@ -117,7 +143,9 @@ less_than_packet::less_than_packet(uint64_t version, subpackets subpackets)
 
 auto less_than_packet::get_value() const -> uint64_t
 {
-    return 0;
+    return static_cast<uint64_t>(
+        get_subpackets().front()->get_value() <
+        get_subpackets().back()->get_value());
 }
 
 equal_to_packet::equal_to_packet(uint64_t version, subpackets subpackets)
@@ -126,7 +154,9 @@ equal_to_packet::equal_to_packet(uint64_t version, subpackets subpackets)
 
 auto equal_to_packet::get_value() const -> uint64_t
 {
-    return 0;
+    return static_cast<uint64_t>(
+        get_subpackets().front()->get_value() ==
+        get_subpackets().back()->get_value());
 }
 
 enum class packet_type
