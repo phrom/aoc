@@ -29,15 +29,16 @@ add_library(lib
   src/day16.cpp
   src/day17.cpp
   src/symbol.cpp
-  src/bitstream.cpp)
+  src/bitstream.cpp
+  src/read_file.cpp)
 target_include_directories(lib PRIVATE src/include)
 target_include_directories(lib SYSTEM PUBLIC src/include)
 target_link_libraries(lib PUBLIC Boost::headers)
 target_compile_options(lib PRIVATE ${ENABLE_COMPILER_WARNINGS})
+target_compile_definitions(lib PRIVATE INPUT_FOLDER="${CMAKE_SOURCE_DIR}/../input")
 
 add_executable(main src/main.cpp)
 target_link_libraries(main PRIVATE lib)
-target_compile_definitions(main PRIVATE INPUT_FOLDER="${CMAKE_SOURCE_DIR}/../input")
 target_compile_options(main PRIVATE ${ENABLE_COMPILER_WARNINGS})
 
 find_package(Catch2 CONFIG REQUIRED)

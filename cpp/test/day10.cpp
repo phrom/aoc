@@ -1,6 +1,7 @@
 #include <catch2/catch.hpp>
 
 #include "day10.hpp"
+#include "read_file.hpp"
 
 TEST_CASE("Day 10: Syntax Scoring")
 {
@@ -61,4 +62,11 @@ TEST_CASE("Day 10: Syntax Scoring")
     }
 
     SECTION("Part 2") { REQUIRE(day10::part2(input) == 288957); }
+
+    SECTION("Full input")
+    {
+        const auto file = read_file("day10.txt");
+        REQUIRE(day10::part1(file) == 462693);
+        REQUIRE(day10::part2(file) == 3094671161);
+    }
 }

@@ -1,6 +1,7 @@
 #include <catch2/catch.hpp>
 
 #include "day13.hpp"
+#include "read_file.hpp"
 
 TEST_CASE("Day 13: Transparent Origami")
 {
@@ -28,4 +29,10 @@ fold along x=5
 )";
 
     SECTION("Part 1") { REQUIRE(day13::part1(input) == 17); }
+
+    SECTION("Full input")
+    {
+        const auto file = read_file("day13.txt");
+        REQUIRE(day13::part1(file) == 678);
+    }
 }

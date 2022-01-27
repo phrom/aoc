@@ -1,6 +1,7 @@
 #include <catch2/catch.hpp>
 
 #include "day5.hpp"
+#include "read_file.hpp"
 
 TEST_CASE("Day 5: Hydrothermal Venture")
 {
@@ -35,5 +36,13 @@ TEST_CASE("Day 5: Hydrothermal Venture")
     }
 
     SECTION("Part 1") { REQUIRE(day5::part1(input) == 5); }
+
     SECTION("Part 2") { REQUIRE(day5::part2(input) == 12); }
+
+    SECTION("Full input")
+    {
+        const auto file = read_file("day5.txt");
+        REQUIRE(day5::part1(file) == 5632);
+        REQUIRE(day5::part2(file) == 22213);
+    }
 }

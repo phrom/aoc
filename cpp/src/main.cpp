@@ -1,4 +1,3 @@
-#include <fstream>
 #include <iostream>
 
 #include "day1.hpp"
@@ -18,16 +17,10 @@
 #include "day7.hpp"
 #include "day8.hpp"
 #include "day9.hpp"
-
-auto read_file(const char* filename) -> std::string
-{
-    std::ifstream file{ filename, std::fstream::in };
-    return { std::istreambuf_iterator<char>{ file }, {} };
-}
+#include "read_file.hpp"
 
 #define RUN(function, filename)                                                \
-    std::cout << #function " = "                                               \
-              << function(read_file(INPUT_FOLDER "/" filename)) << "\n"
+    std::cout << #function " = " << function(read_file(filename)) << "\n"
 
 auto main() -> int
 {

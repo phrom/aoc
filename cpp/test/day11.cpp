@@ -1,6 +1,7 @@
 #include <catch2/catch.hpp>
 
 #include "day11.hpp"
+#include "read_file.hpp"
 
 TEST_CASE("Day 11: Dumbo Octopus")
 {
@@ -37,4 +38,11 @@ TEST_CASE("Day 11: Dumbo Octopus")
     SECTION("Part 1") { REQUIRE(day11::part1(input) == 1656); }
 
     SECTION("Part 2") { REQUIRE(day11::part2(input) == 195); }
+
+    SECTION("Full input")
+    {
+        const auto file = read_file("day11.txt");
+        REQUIRE(day11::part1(file) == 1632);
+        REQUIRE(day11::part2(file) == 303);
+    }
 }

@@ -1,6 +1,7 @@
 #include <catch2/catch.hpp>
 
 #include "day14.hpp"
+#include "read_file.hpp"
 
 TEST_CASE("Day 14: Extended Polymerization")
 {
@@ -51,5 +52,13 @@ CN -> C
     }
 
     SECTION("Part 1") { REQUIRE(day14::part1(input) == 1588); }
+
     SECTION("Part 2") { REQUIRE(day14::part2(input) == 2188189693529); }
+
+    SECTION("Full input")
+    {
+        const auto file = read_file("day14.txt");
+        REQUIRE(day14::part1(file) == 2740);
+        REQUIRE(day14::part2(file) == 2959788056211);
+    }
 }

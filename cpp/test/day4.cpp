@@ -1,6 +1,7 @@
 #include <catch2/catch.hpp>
 
 #include "day4.hpp"
+#include "read_file.hpp"
 
 TEST_CASE("Day 4: Giant Squid")
 {
@@ -55,5 +56,12 @@ TEST_CASE("Day 4: Giant Squid")
     SECTION("Part 2 - What will be the final score of the last board to win?")
     {
         REQUIRE(day4::part2(input) == 1924);
+    }
+
+    SECTION("Full input")
+    {
+        const auto file = read_file("day4.txt");
+        REQUIRE(day4::part1(file) == 5685);
+        REQUIRE(day4::part2(file) == 21070);
     }
 }

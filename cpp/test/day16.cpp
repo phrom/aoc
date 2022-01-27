@@ -1,6 +1,7 @@
 #include <catch2/catch.hpp>
 
 #include "day16.hpp"
+#include "read_file.hpp"
 
 TEST_CASE("Day 16: Packet Decoder")
 {
@@ -22,5 +23,12 @@ TEST_CASE("Day 16: Packet Decoder")
         REQUIRE(day16::part2("F600BC2D8F") == 0);
         REQUIRE(day16::part2("9C005AC2F8F0") == 0);
         REQUIRE(day16::part2("9C0141080250320F1802104A08") == 1);
+    }
+
+    SECTION("Full input")
+    {
+        const auto file = read_file("day16.txt");
+        REQUIRE(day16::part1(file) == 906);
+        REQUIRE(day16::part2(file) == 819324480368);
     }
 }

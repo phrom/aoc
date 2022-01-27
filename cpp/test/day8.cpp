@@ -1,6 +1,7 @@
 #include <catch2/catch.hpp>
 
 #include "day8.hpp"
+#include "read_file.hpp"
 
 TEST_CASE("Day 8: Seven Segment Search")
 {
@@ -43,5 +44,12 @@ gcafb gcf dcaebfg ecagb gf abcdeg gaef cafbge fdbac fegbdc | fgae cfgab fg bagce
         REQUIRE(
             day8::signal_intersection({ "acdeg", "acdfg", "abdfg" }) == "adg");
         REQUIRE(day8::signal_intersection({ "abfg", "cf" }) == "f");
+    }
+
+    SECTION("Full input")
+    {
+        const auto file = read_file("day8.txt");
+        REQUIRE(day8::part1(file) == 493);
+        REQUIRE(day8::part2(file) == 1010460);
     }
 }

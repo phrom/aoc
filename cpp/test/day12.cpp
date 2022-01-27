@@ -1,6 +1,7 @@
 #include <catch2/catch.hpp>
 
 #include "day12.hpp"
+#include "read_file.hpp"
 
 TEST_CASE("Day 12: Passage Pathing")
 {
@@ -48,4 +49,11 @@ b-end
     SECTION("Part 1") { REQUIRE(day12::part1(input) == 226); }
 
     SECTION("Part 2") { REQUIRE(day12::part2(input) == 3509); }
+
+    SECTION("Full input")
+    {
+        const auto file = read_file("day12.txt");
+        REQUIRE(day12::part1(file) == 4754);
+        REQUIRE(day12::part2(file) == 143562);
+    }
 }
