@@ -26,7 +26,11 @@ struct probe_launcher
 {
     explicit probe_launcher(const target_area& target);
 
+    [[nodiscard]] auto
+    hits_target(int64_t dx, int64_t dy, int64_t x = 0, int64_t y = 0) const
+        -> bool;
     [[nodiscard]] auto max_y() const -> uint64_t;
+    [[nodiscard]] auto distinct_velocities() const -> uint64_t;
 
     auto operator<=>(const probe_launcher&) const = default;
 

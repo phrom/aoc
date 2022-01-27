@@ -38,6 +38,43 @@ auto probe_launcher::max_y() const -> uint64_t
     return max_y;
 }
 
+auto probe_launcher::hits_target(int64_t dx, int64_t dy, int64_t x, int64_t y)
+    const -> bool
+{
+    if (target_.x().contains(x) && target_.y().contains(y)) {
+        return true;
+    }
+    if (x > target_.x().max() || y < target_.y().min()) {
+        return false;
+    }
+    x += dx;
+    y += dy;
+    if (dx > 0) {
+        dx -= 1;
+    } else if (dx < 0) {
+        dx += 1;
+    }
+    dy -= 1;
+    return hits_target(dx, dy, x, y);
+}
+
+auto probe_launcher::distinct_velocities() const -> uint64_t
+{
+    int64_t min_x = 0;
+    for (int64_t sum = 0; !target_.x().contains(sum); sum += ++min_x) {
+    }
+    uint64_t count = 0;
+    for (int64_t dx = min_x; dx <= target_.x().max(); ++dx) {
+        for (int64_t dy = target_.y().min(); dy <= std::abs(target_.y().min());
+             ++dy) {
+            if (hits_target(dx, dy)) {
+                count++;
+            }
+        }
+    }
+    return count;
+}
+
 auto operator<<(std::ostream& out, const probe_launcher& launcher)
     -> std::ostream&
 {
@@ -61,9 +98,9 @@ auto part1(std::string_view input) -> uint64_t
     return parse(input).max_y();
 }
 
-auto part2(std::string_view) -> uint64_t
+auto part2(std::string_view input) -> uint64_t
 {
-    return 0;
+    return parse(input).distinct_velocities();
 }
 
 } // namespace day17

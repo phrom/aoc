@@ -12,4 +12,5 @@ TEST_CASE("Day 17: Trick Shot")
                                        { 20, 30 }, { -10, -5 } } });
     }
     SECTION("Part 1") { REQUIRE(day17::part1(input) == 45); }
+    SECTION("Part 2") { REQUIRE(day17::part2(input) == 112); }
 }
