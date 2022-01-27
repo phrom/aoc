@@ -86,11 +86,12 @@ void polymer_template::insert_pairs(
     std::map<std::vector<pair_insertion_rule>::const_iterator, uint64_t>
         matched;
     for (const auto [symbol, count] : symbol_count_) {
+        auto sym = symbol;
         if (const auto rit = std::find_if(
                 rules.begin(),
                 rules.end(),
-                [&](const auto& rule) {
-                    return rule.get_combination() == symbol;
+                [=](const auto& rule) {
+                    return rule.get_combination() == sym;
                 });
             rit != rules.end()) {
             matched.insert({ rit, count });
