@@ -35,7 +35,7 @@ auto run_commands(submarine& submarine, std::string_view commands) -> int
             submarine.forward(value);
         } else if (command == "down") {
             submarine.down(value);
-        } else {
+        } else if (command == "up") {
             submarine.up(value);
         }
     } while (iss.good());
