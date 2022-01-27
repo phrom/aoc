@@ -1,36 +1,26 @@
 #ifndef AOC_DAY5_HPP
 #define AOC_DAY5_HPP
 
+#include "point.hpp"
+
 #include <compare>
 #include <string_view>
 #include <vector>
 
 namespace day5 {
 
-struct point
-{
-    point(uint64_t x_, uint64_t y_);
-
-    auto operator<=>(const point&) const = default;
-
-    uint64_t x;
-    uint64_t y;
-};
-
-auto operator<<(std::ostream&, const point&) -> std::ostream&;
-
 struct line
 {
-    line(const point& p1_, const point& p2_);
+    line(const point<uint64_t>& p1_, const point<uint64_t>& p2_);
 
     auto operator<=>(const line&) const = default;
 
     [[nodiscard]] auto is_horizontal() const -> bool;
     [[nodiscard]] auto is_vertical() const -> bool;
-    [[nodiscard]] auto points() const -> std::vector<point>;
+    [[nodiscard]] auto points() const -> std::vector<point<uint64_t>>;
 
-    point p1;
-    point p2;
+    point<uint64_t> p1;
+    point<uint64_t> p2;
 };
 
 auto operator<<(std::ostream&, const line&) -> std::ostream&;

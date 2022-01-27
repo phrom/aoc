@@ -8,17 +8,7 @@ namespace day5 {
 
 using ::operator<<;
 
-point::point(uint64_t x_, uint64_t y_)
-    : x{ x_ }
-    , y{ y_ }
-{}
-
-auto operator<<(std::ostream& out, const point& point) -> std::ostream&
-{
-    return out << "point { " << point.x << ", " << point.y << " }";
-}
-
-line::line(const point& p1_, const point& p2_)
+line::line(const point<uint64_t>& p1_, const point<uint64_t>& p2_)
     : p1{ p1_ }
     , p2{ p2_ }
 {}
@@ -38,16 +28,16 @@ auto line::is_vertical() const -> bool
     return p1.y == p2.y;
 }
 
-auto line::points() const -> std::vector<point>
+auto line::points() const -> std::vector<point<uint64_t>>
 {
-    std::vector<point> result;
+    std::vector<point<uint64_t>> result;
     const auto delta = [](uint64_t a, uint64_t b) -> int {
         const int diff = static_cast<int>(b) - static_cast<int>(a);
         return diff == 0 ? 0 : diff > 0 ? 1 : -1;
     };
     const int dx = delta(p1.x, p2.x);
     const int dy = delta(p1.y, p2.y);
-    point p = p1;
+    point<uint64_t> p = p1;
     while (p != p2) {
         result.emplace_back(p);
         p.x = static_cast<uint64_t>(static_cast<int>(p.x) + dx);
@@ -143,7 +133,8 @@ auto parse(std::string_view input) -> floor
         std::string arrow;
         std::istringstream lss{ l };
         lss >> x1 >> comma >> y1 >> arrow >> x2 >> comma >> y2;
-        lines.emplace_back(point{ x1, y1 }, point{ x2, y2 });
+        lines.emplace_back(
+            point<uint64_t>{ x1, y1 }, point<uint64_t>{ x2, y2 });
     }
     return floor{ lines };
 }

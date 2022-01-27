@@ -39,8 +39,6 @@ struct literal_packet : packet
     auto print(std::ostream&) const -> std::ostream& override;
 
   private:
-    friend auto operator<<(std::ostream&, const literal_packet&)
-        -> std::ostream&;
     uint64_t value_;
 };
 
@@ -55,8 +53,6 @@ struct operator_packet : packet
     auto print(std::ostream&, std::string_view name) const -> std::ostream&;
 
   private:
-    friend auto operator<<(std::ostream&, const operator_packet&)
-        -> std::ostream&;
     subpackets subpackets_;
 };
 

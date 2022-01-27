@@ -1,7 +1,6 @@
 #include <catch2/catch.hpp>
 
 #include "day16.hpp"
-#include <iostream>
 
 TEST_CASE("Day 16: Packet Decoder")
 {
